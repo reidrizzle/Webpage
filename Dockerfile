@@ -9,8 +9,10 @@ RUN a2enmod rewrite
 # Copy project files to Apache root
 COPY . /var/www/html/
 
-# Set working directory permissions
-RUN chown -R www-data:www-data /var/www/html
+# Create uploads directory and set permissions
+RUN mkdir -p /var/www/html/uploads/avatars \
+    && chmod -R 777 /var/www/html/uploads \
+    && chown -R www-data:www-data /var/www/html
 
 # Expose default port
 EXPOSE 80
