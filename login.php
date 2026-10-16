@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['full_name'] = $user['full_name'];
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['avatar_url'] = $user['avatar_url'];
+                $_SESSION['wallet_balance'] = isset($user['wallet_balance']) ? (float)$user['wallet_balance'] : 9999999.00;
 
                 header("Location: index.php?msg=login_success");
                 exit;

@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Hash password securely with BCRYPT
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
                 
-                $insertStmt = $pdo->prepare("INSERT INTO users (username, full_name, email, password, role) VALUES (:u, :fn, :e, :p, 'member')");
+                $insertStmt = $pdo->prepare("INSERT INTO users (username, full_name, email, password, role, wallet_balance) VALUES (:u, :fn, :e, :p, 'member', 9999999.00)");
                 $insertStmt->execute([
                     ':u' => $username,
                     ':fn' => $full_name,

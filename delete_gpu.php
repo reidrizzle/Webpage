@@ -5,6 +5,9 @@
  */
 require_once __DIR__ . '/config/db.php';
 
+// Only Admin can delete GPU
+requireAdmin();
+
 $pdo = getDBConnection();
 $gpuId = (int)($_GET['id'] ?? 0);
 $confirm = isset($_GET['confirm']) && $_GET['confirm'] == '1';

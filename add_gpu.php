@@ -6,7 +6,9 @@
 $pageTitle = "เพิ่มข้อมูลการ์ดจอใหม่ (Add New GPU)";
 require_once __DIR__ . '/config/db.php';
 
-// Check if user is logged in (optional check, or open for demo testing with notice)
+// Only Admin can add GPU
+requireAdmin();
+
 $pdo = getDBConnection();
 $error = null;
 

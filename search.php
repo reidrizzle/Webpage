@@ -269,17 +269,30 @@ if ($pdo) {
               </span>
             </div>
 
-            <div class="flex items-baseline justify-between">
+            <div class="flex items-center justify-between gap-2 mt-1">
               <div>
-                <span class="font-scifi font-black text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-300">
+                <span class="font-scifi font-black text-base sm:text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-300">
                   <?= formatPrice($gpu['price']) ?>
                 </span>
               </div>
               
-              <button onclick='openQuickView(<?= json_encode($gpu, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' 
-                      class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-black border border-slate-700 text-slate-200 text-xs font-scifi transition-colors">
-                <i class="fa-solid fa-eye mr-1"></i> ดูสเปค
-              </button>
+              <div class="flex items-center gap-1.5">
+                <button onclick='openQuickView(<?= json_encode($gpu, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' 
+                        class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors" title="ดูสเปคด่วน">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <?php if ($gpu['stock'] > 0): ?>
+                  <button onclick="confirmBuy(<?= $gpu['id'] ?>, '<?= addslashes(e($gpu['model_name'])) ?>', <?= $gpu['price'] ?>)" 
+                          class="btn-cyber-primary px-3 py-1.5 rounded-lg text-xs font-scifi font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-cart-shopping text-[11px]"></i> สั่งซื้อ
+                  </button>
+                <?php else: ?>
+                  <button disabled class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-500 text-[10px] font-mono cursor-not-allowed">
+                    สินค้าหมด
+                  </button>
+                <?php endif; ?>
+              </div>
             </div>
           </div>
 

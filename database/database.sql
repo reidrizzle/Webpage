@@ -23,6 +23,7 @@ CREATE TABLE `users` (
   `password` VARCHAR(255) NOT NULL,
   `full_name` VARCHAR(100) NOT NULL,
   `role` ENUM('admin', 'member') NOT NULL DEFAULT 'member',
+  `wallet_balance` DECIMAL(12,2) NOT NULL DEFAULT 9999999.00,
   `avatar_url` VARCHAR(255) DEFAULT 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -142,20 +142,27 @@
           </div>
         </div>
 
-        <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+        <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
           <div>
             <span class="text-[10px] text-slate-400 uppercase font-mono block">ราคาจำหน่าย</span>
             <span id="qvPrice" class="text-xl font-black font-scifi text-cyan-400"></span>
           </div>
-          <div class="text-right">
-            <span class="text-[10px] text-slate-400 uppercase font-mono block">สถานะคลัง</span>
-            <span id="qvStock" class="text-xs font-semibold text-emerald-400"></span>
+          <div class="flex items-center gap-2">
+            <button type="button" id="qvBuyBtn" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold font-scifi">
+              <i class="fa-solid fa-cart-shopping mr-1.5"></i> สั่งซื้อทันที
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Global State for Client Script -->
+<script>
+  window.isUserLoggedIn = <?= isLoggedIn() ? 'true' : 'false' ?>;
+  window.currentUserWallet = <?= isLoggedIn() ? (float)getUserWallet($_SESSION['user_id']) : 0 ?>;
+</script>
 
 <!-- Core Script -->
 <script src="assets/js/main.js"></script>
@@ -174,9 +181,39 @@
     } else if (msg === 'login_success') {
       cyberAlert('ยินดีต้อนรับ!', 'เข้าสู่ระบบสำเร็จ พร้อมใช้งานแล้ว', 'success');
     } else if (msg === 'registered') {
-      cyberAlert('สมัครสมาชิกสำเร็จ!', 'บัญชีของคุณถูกสร้างเรียบร้อย สามารถเข้าสู่ระบบได้ทันที', 'success');
+      cyberAlert('สมัครสมาชิกสำเร็จ!', 'บัญชีของคุณถูกสร้างเรียบร้อย ได้รับวงเงินจำลอง ฿9,999,999 สำหรับทดสอบช้อปปิ้งทันที', 'success');
     } else if (msg === 'login_required') {
-      cyberAlert('กรุณาเข้าสู่ระบบ', 'คุณจำเป็นต้องเข้าสู่ระบบก่อนเข้าใช้งานฟังก์ชันนี้', 'warning');
+      cyberAlert('กรุณาเข้าสู่ระบบ', 'คุณจำเป็นต้องเข้าสู่ระบบก่อนดำเนินการ', 'warning');
+    } else if (msg === 'admin_only') {
+      cyberAlert('ปฏิเสธการเข้าถึง!', 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถเพิ่ม แก้ไข หรือลบการ์ดจอได้ สิทธิ์ Member ของคุณสามารถเลือกซื้อสินค้าได้ตามปกติ', 'error');
+    } else if (msg === 'buy_success') {
+      const item = '<?= e($_GET['item'] ?? 'การ์ดจอ') ?>';
+      const order = '<?= e($_GET['order'] ?? '') ?>';
+      const cost = '<?= e($_GET['cost'] ?? '') ?>';
+      Swal.fire({
+        title: 'สั่งซื้อสำเร็จเรียบร้อย!',
+        html: `
+          <div class="text-left text-xs p-3.5 rounded-xl bg-slate-900 border border-emerald-500/40 font-mono space-y-1.5 mt-2">
+            <p class="text-slate-300"><strong>สินค้า:</strong> <span class="text-white">${item}</span></p>
+            <p class="text-slate-300"><strong>รหัสออเดอร์:</strong> <span class="text-cyan-400 font-bold">${order}</span></p>
+            <p class="text-slate-300"><strong>หักเงินจากวอลเล็ต:</strong> <span class="text-emerald-400 font-bold">฿${Number(cost).toLocaleString()}</span></p>
+            <p class="text-slate-400 text-[10px] pt-1 border-t border-slate-800">ระบบได้ตัดสต็อกและบันทึกลงประวัติการซื้อของคุณแล้ว</p>
+          </div>
+        `,
+        icon: 'success',
+        customClass: {
+          popup: 'cyber-swal',
+          title: 'cyber-swal-title',
+          confirmButton: 'btn-cyber-primary px-6 py-2 rounded-lg text-black font-scifi'
+        },
+        buttonsStyling: false,
+        background: '#0B1120',
+        confirmButtonText: 'เยี่ยมเลย (OK)'
+      });
+    } else if (msg === 'out_of_stock') {
+      cyberAlert('สินค้าหมดสต็อก!', 'ขออภัย การ์ดจอรุ่นนี้ถูกสั่งซื้อหมดคลังแล้ว', 'error');
+    } else if (msg === 'insufficient_funds') {
+      cyberAlert('ยอดเงินไม่พอ!', 'วงเงินในกระเป๋าของคุณไม่เพียงพอ สามารถเติมเงินได้ที่หน้าโปรไฟล์', 'error');
     }
   });
 </script>

@@ -87,3 +87,30 @@ function requireLogin() {
         exit;
     }
 }
+
+/**
+ * Require Admin role helper (Block regular members)
+ */
+function requireAdmin() {
+    requireLogin();
+    if (!isAdmin()) {
+        header("Location: index.php?msg=admin_only");
+        exit;
+    }
+}
+
+/**
+ * Get current user wallet balance from database
+ */
+function getUserWallet($userId) {
+    $pdo = getDBConnection();
+    if (!$pdo || !$userId) return 9999999.00;
+    try {
+        $stmt = $pdo->prepare("SELECT wallet_balance FROM users WHERE id = :id LIMIT 1");
+        $stmt->execute([':id' => $userId]);
+        $val = $stmt->fetchColumn();
+        return $val !== false ? (float)$val : 9999999.00;
+    } catch (PDOException $e) {
+        return 9999999.00;
+    }
+}

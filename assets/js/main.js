@@ -1,6 +1,6 @@
 /**
  * Cyber-Tech GPU Store - Core JavaScript
- * SweetAlert2 Cyber Modals, Real-time Image Preview & UI Handlers
+ * SweetAlert2 Cyber Modals, Real-time Image Preview, Buying & UI Handlers
  */
 
 // Image Fallback Handler
@@ -19,7 +19,7 @@ function cyberAlert(title, text, icon = 'success') {
       customClass: {
         popup: 'cyber-swal',
         title: 'cyber-swal-title',
-        confirmButton: 'btn-cyber-primary px-6 py-2 rounded-lg text-black'
+        confirmButton: 'btn-cyber-primary px-6 py-2 rounded-lg text-black font-scifi'
       },
       buttonsStyling: false,
       background: '#0B1120',
@@ -30,7 +30,7 @@ function cyberAlert(title, text, icon = 'success') {
   }
 }
 
-// Confirm Delete with SweetAlert2
+// Confirm Delete with SweetAlert2 (Admin Only)
 function confirmDelete(gpuId, gpuName) {
   if (typeof Swal !== 'undefined') {
     Swal.fire({
@@ -56,6 +56,80 @@ function confirmDelete(gpuId, gpuName) {
   } else {
     if (confirm(`คุณต้องการลบ "${gpuName}" หรือไม่?`)) {
       window.location.href = `delete_gpu.php?id=${gpuId}&confirm=1`;
+    }
+  }
+}
+
+// Instant Buy GPU Confirmation
+function confirmBuy(gpuId, gpuName, price) {
+  if (!window.isUserLoggedIn) {
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'กรุณาเข้าสู่ระบบ',
+        html: 'คุณต้องเข้าสู่ระบบก่อนสั่งซื้อการ์ดจอ<br><small class="text-amber-400 font-bold">สมาชิกใหม่รับวงเงินจำลอง ฿9,999,999 ทันทีสำหรับการทดสอบ!</small>',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'เข้าสู่ระบบตอนนี้',
+        cancelButtonText: 'ไว้ทีหลัง',
+        customClass: {
+          popup: 'cyber-swal',
+          title: 'cyber-swal-title',
+          confirmButton: 'btn-cyber-primary px-5 py-2.5 rounded-lg text-black font-scifi font-bold mr-3',
+          cancelButton: 'btn-cyber-outline px-5 py-2.5 rounded-lg text-slate-300 font-scifi'
+        },
+        buttonsStyling: false,
+        background: '#0B1120'
+      }).then((res) => {
+        if (res.isConfirmed) {
+          window.location.href = 'login.php';
+        }
+      });
+    } else {
+      window.location.href = 'login.php';
+    }
+    return;
+  }
+
+  const wallet = Number(window.currentUserWallet !== undefined ? window.currentUserWallet : 9999999);
+  const numPrice = Number(price);
+
+  if (wallet < numPrice) {
+    cyberAlert('ยอดเงินไม่เพียงพอ', 'ยอดเงินในกระเป๋าของคุณไม่เพียงพอสำหรับการสั่งซื้อการ์ดจอนี้ สามารถกดเติมเงินฟรีได้ที่หน้าโปรไฟล์ของคุณ', 'error');
+    return;
+  }
+
+  const remaining = wallet - numPrice;
+  if (typeof Swal !== 'undefined') {
+    Swal.fire({
+      title: 'ยืนยันการสั่งซื้อการ์ดจอ',
+      html: `
+        <div class="text-left text-xs space-y-2 p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 font-mono mt-3">
+          <p class="text-slate-300"><strong>รุ่นการ์ดจอ:</strong> <span class="text-white font-bold">${gpuName}</span></p>
+          <p class="text-slate-300"><strong>ราคา:</strong> <span class="text-emerald-400 font-bold text-sm">฿${numPrice.toLocaleString(undefined, {minimumFractionDigits: 2})}</span></p>
+          <p class="text-slate-400"><strong>ยอดเงินในวอลเล็ตปัจจุบัน:</strong> ฿${wallet.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+          <p class="text-cyan-400 pt-2 border-t border-slate-800 font-bold"><strong>ยอดเงินคงเหลือหลังสั่งซื้อ:</strong> ฿${remaining.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+        </div>
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'ยืนยันสั่งซื้อและหักเงินทันที!',
+      cancelButtonText: 'ยกเลิก',
+      customClass: {
+        popup: 'cyber-swal',
+        title: 'cyber-swal-title',
+        confirmButton: 'btn-cyber-nvidia px-5 py-2.5 rounded-lg text-black font-scifi font-bold mr-3',
+        cancelButton: 'btn-cyber-outline px-5 py-2.5 rounded-lg text-slate-300 font-scifi'
+      },
+      buttonsStyling: false,
+      background: '#0B1120'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `buy_gpu.php?gpu_id=${gpuId}`;
+      }
+    });
+  } else {
+    if (confirm(`ยืนยันการสั่งซื้อ "${gpuName}" ในราคา ฿${numPrice.toLocaleString()} หรือไม่?`)) {
+      window.location.href = `buy_gpu.php?gpu_id=${gpuId}`;
     }
   }
 }
@@ -109,6 +183,25 @@ function openQuickView(gpuData) {
   if (qvImg) {
     qvImg.src = gpuData.image_url || 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80';
     qvImg.onerror = () => handleImgError(qvImg);
+  }
+
+  // Hook Quick View Buy Button
+  const qvBuyBtn = document.getElementById('qvBuyBtn');
+  if (qvBuyBtn) {
+    if (gpuData.stock > 0) {
+      qvBuyBtn.disabled = false;
+      qvBuyBtn.className = "btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold font-scifi";
+      qvBuyBtn.innerHTML = '<i class="fa-solid fa-cart-shopping mr-1.5"></i> สั่งซื้อทันที';
+      qvBuyBtn.onclick = () => {
+        closeQuickView();
+        confirmBuy(gpuData.id, gpuData.model_name, gpuData.price);
+      };
+    } else {
+      qvBuyBtn.disabled = true;
+      qvBuyBtn.className = "px-4 py-2 rounded-xl text-xs font-bold font-scifi bg-slate-800 text-slate-500 cursor-not-allowed";
+      qvBuyBtn.innerHTML = 'สินค้าหมด';
+      qvBuyBtn.onclick = null;
+    }
   }
 
   modal.classList.remove('hidden');

@@ -3,7 +3,11 @@
  * Inventory Management & Administration Table
  * Full CRUD control center with SweetAlert2 Delete Confirmations
  */
-$pageTitle = "จัดการคลังสินค้า (Inventory Management)";
+require_once __DIR__ . '/config/db.php';
+
+// Only Admin can access inventory management
+requireAdmin();
+
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 

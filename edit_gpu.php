@@ -6,6 +6,9 @@
 $pageTitle = "แก้ไขข้อมูลการ์ดจอ (Edit GPU)";
 require_once __DIR__ . '/config/db.php';
 
+// Only Admin can edit GPU
+requireAdmin();
+
 $pdo = getDBConnection();
 $error = null;
 $gpuId = (int)($_GET['id'] ?? 0);
