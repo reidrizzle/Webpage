@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store (สินค้า) | Vibe Graphics - Premium GPU Store</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts: Inter & Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Custom Theme Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Top Announcement Banner -->
+    <div class="vip-banner py-2 text-center text-white">
+        <div class="container d-flex justify-content-center align-items-center gap-2">
+            <i class="bi bi-stars text-accent fs-5"></i>
+            <span><strong class="text-accent fw-bold">Billboard VIP Season:</strong> Secure your flagship GPU allocation today! Your simulated wallet comes pre-loaded with $999,999 fake money.</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 36px; height: 36px; background: var(--gradient-primary) !important;">
+                    <i class="bi bi-lightning-charge-fill text-white fs-5"></i>
+                </div>
+                VIBE GRAPHICS
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="bi bi-list text-light fs-1"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto gap-1 gap-lg-2 gap-xl-3 mt-3 mt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house-door-fill"></i>
+                            <span class="nav-label">Home</span>
+                            <small class="nav-sub">(หน้าแรก)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="store.html">
+                            <i class="bi bi-gpu-card"></i>
+                            <span class="nav-label">Store</span>
+                            <small class="nav-sub">(สินค้า)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="promotions.html">
+                            <i class="bi bi-tags-fill"></i>
+                            <span class="nav-label">Promotions</span>
+                            <small class="nav-sub">(โปรโมชัน)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="payment.html">
+                            <i class="bi bi-credit-card-fill"></i>
+                            <span class="nav-label">Payment</span>
+                            <small class="nav-sub">(การชำระเงิน)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">
+                            <i class="bi bi-telephone-fill"></i>
+                            <span class="nav-label">Contact</span>
+                            <small class="nav-sub">(ติดต่อเรา)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reviews.html">
+                            <i class="bi bi-chat-square-text-fill"></i>
+                            <span class="nav-label">Reviews</span>
+                            <small class="nav-sub">(ความคิดเห็น)</small>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center mt-3 mt-lg-0">
+                    <div class="wallet-badge">
+                        <div class="wallet-dot"></div>
+                        $<span id="walletBalance">999,999</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content: Store Page -->
+    <main class="container page-content">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
+            <div>
+                <span class="vibe-tag mb-2"><i class="bi bi-fire"></i> TRENDING HARDWARE</span>
+                <h1 class="display-5 fw-bold mb-1">FLAGSHIP <span class="text-gradient">GPU CATALOG</span></h1>
+                <p class="text-muted mb-0">Our complete lineup of 10 graphics architectures including next-gen RTX 50-series and mainstream bestsellers.</p>
+            </div>
+        </div>
+
+        <!-- Filter Controls & Art Mode Switcher -->
+        <div class="d-flex flex-wrap gap-2 mb-4 pb-2 align-items-center justify-content-between">
+            <div class="d-flex flex-wrap gap-2">
+                <button class="filter-pill active" onclick="filterStore('all', this)"><i class="bi bi-grid-fill me-1"></i> All Models (10)</button>
+                <button class="filter-pill" onclick="filterStore('50series', this)"><i class="bi bi-lightning-charge-fill me-1"></i> RTX 50 Series (4)</button>
+                <button class="filter-pill" onclick="filterStore('popular', this)"><i class="bi bi-fire me-1"></i> Most Popular</button>
+                <button class="filter-pill" onclick="filterStore('nvidia', this)"><i class="bi bi-cpu me-1"></i> NVIDIA GeForce</button>
+                <button class="filter-pill" onclick="filterStore('amd', this)"><i class="bi bi-cpu-fill me-1"></i> AMD Radeon</button>
+                <button class="filter-pill" onclick="filterStore('enthusiast', this)"><i class="bi bi-trophy-fill me-1"></i> 24GB+ Titan</button>
+            </div>
+            <div class="mt-2 mt-md-0">
+                <button class="btn btn-outline-custom btn-sm py-2 px-3" id="btnArtToggle" onclick="toggleArtMode()">
+                    <i class="bi bi-camera me-1"></i> Switch to Studio Photos
+                </button>
+            </div>
+        </div>
+
+        <!-- 10 Store Cards Grid -->
+        <div class="row g-4 justify-content-center" id="gpuStoreGrid">
+            <!-- Card 1: RTX 5090 -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="nvidia" data-series="50" data-popular="false" data-vram="32">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">NVIDIA</span>
+                            <span class="badge-status flagship"><i class="bi bi-award-fill me-1"></i> Flagship</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rtx5090" alt="GeForce RTX 5090" onerror="handleImgError(this, 'rtx5090')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">GeForce RTX 5090</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">The new frontier of extreme performance. Next-gen Blackwell architecture with 32GB GDDR7 delivering unprecedented AI and neural path-tracing power.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">32GB</div><div class="spec-label">GDDR7</div></div>
+                            <div class="spec-item"><div class="spec-value">2,900</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">24,576</div><div class="spec-label">CUDA Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$1,999</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rtx5090')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('GeForce RTX 5090 32GB', 1999)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: RTX 5080 -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="nvidia" data-series="50" data-popular="false" data-vram="16">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">NVIDIA</span>
+                            <span class="badge-status latest"><i class="bi bi-stars me-1"></i> Latest Gen</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rtx5080" alt="GeForce RTX 5080" onerror="handleImgError(this, 'rtx5080')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">GeForce RTX 5080</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">Enthusiast-class Blackwell architecture pushing extreme 4K high-FPS gameplay and intense creative rendering suites with next-gen GDDR7 bandwidth.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">16GB</div><div class="spec-label">GDDR7</div></div>
+                            <div class="spec-item"><div class="spec-value">2,800</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">10,752</div><div class="spec-label">CUDA Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$1,199</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rtx5080')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('GeForce RTX 5080 16GB', 1199)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: RTX 5070 Ti -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="nvidia" data-series="50" data-popular="false" data-vram="16">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">NVIDIA</span>
+                            <span class="badge-status latest"><i class="bi bi-lightning-charge me-1"></i> Next-Gen Ti</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rtx5070ti" alt="GeForce RTX 5070 Ti" onerror="handleImgError(this, 'rtx5070ti')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">GeForce RTX 5070 Ti</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">High-octane 1440p / 4K gaming powerhouse. High core count Blackwell silicon with generous 16GB GDDR7 buffer and DLSS 4 frame gen.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">16GB</div><div class="spec-label">GDDR7</div></div>
+                            <div class="spec-item"><div class="spec-value">2,750</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">8,960</div><div class="spec-label">CUDA Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$799</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rtx5070ti')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('GeForce RTX 5070 Ti 16GB', 799)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: RTX 5070 -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="nvidia" data-series="50" data-popular="true" data-vram="12">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">NVIDIA</span>
+                            <span class="badge-status value"><i class="bi bi-gem me-1"></i> Next-Gen Value</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rtx5070" alt="GeForce RTX 5070" onerror="handleImgError(this, 'rtx5070')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">GeForce RTX 5070</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">Next-generation Blackwell accessibility with exceptional power efficiency, advanced ray tracing cores, and dual-fan stealth acoustics.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">12GB</div><div class="spec-label">GDDR7</div></div>
+                            <div class="spec-item"><div class="spec-value">2,670</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">6,400</div><div class="spec-label">CUDA Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$599</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rtx5070')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('GeForce RTX 5070 12GB', 599)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: RTX 4070 SUPER -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="nvidia" data-series="40" data-popular="true" data-vram="12">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">NVIDIA</span>
+                            <span class="badge-status popular"><i class="bi bi-fire me-1"></i> Most Popular 1440p</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rtx4070s" alt="GeForce RTX 4070 SUPER" onerror="handleImgError(this, 'rtx4070s')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">GeForce RTX 4070 SUPER</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">The undisputed sweet-spot champion for 1440p gaming. Boosted shader count and ultra-efficient Ada Lovelace architecture loved by gamers worldwide.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">12GB</div><div class="spec-label">GDDR6X</div></div>
+                            <div class="spec-item"><div class="spec-value">2,475</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">7,168</div><div class="spec-label">CUDA Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$599</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rtx4070s')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('GeForce RTX 4070 SUPER 12GB', 599)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: RTX 4060 -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="nvidia" data-series="40" data-popular="true" data-vram="8">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">NVIDIA</span>
+                            <span class="badge-status popular"><i class="bi bi-trophy-fill me-1"></i> #1 Global Best Seller</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rtx4060" alt="GeForce RTX 4060" onerror="handleImgError(this, 'rtx4060')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">GeForce RTX 4060</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">The most purchased GPU in the world on Steam Hardware Survey. Ultra-cool 115W power envelope, full DLSS 3 frame gen, and flawless 1080p esports performance.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">8GB</div><div class="spec-label">GDDR6</div></div>
+                            <div class="spec-item"><div class="spec-value">2,460</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">3,072</div><div class="spec-label">CUDA Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$299</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rtx4060')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('GeForce RTX 4060 8GB', 299)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 7: RTX 3060 -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="nvidia" data-series="30" data-popular="true" data-vram="12">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">NVIDIA</span>
+                            <span class="badge-status popular"><i class="bi bi-people-fill me-1"></i> The People's GPU</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rtx3060" alt="GeForce RTX 3060" onerror="handleImgError(this, 'rtx3060')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">GeForce RTX 3060</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">The legendary budget champion. Generous 12GB VRAM buffer and rock-solid Ampere reliability, remaining the #1 hardware choice for millions worldwide.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">12GB</div><div class="spec-label">GDDR6</div></div>
+                            <div class="spec-item"><div class="spec-value">1,777</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">3,584</div><div class="spec-label">CUDA Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$279</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rtx3060')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('GeForce RTX 3060 12GB', 279)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 8: RX 7900 XTX -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="amd" data-series="7000" data-popular="false" data-vram="24">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">AMD</span>
+                            <span class="badge-status red-team"><i class="bi bi-fire me-1"></i> Team Red Flagship</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rx7900xtx" alt="Radeon RX 7900 XTX" onerror="handleImgError(this, 'rx7900xtx')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">Radeon RX 7900 XTX</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">Breakthrough RDNA 3 chiplet technology bringing immense raw rasterization power and 24GB memory for uncompromised 4K gaming and workstations.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">24GB</div><div class="spec-label">GDDR6</div></div>
+                            <div class="spec-item"><div class="spec-value">2,500</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">6,144</div><div class="spec-label">Stream Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$999</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rx7900xtx')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('Radeon RX 7900 XTX 24GB', 999)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 9: RX 7800 XT -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="amd" data-series="7000" data-popular="true" data-vram="16">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">AMD</span>
+                            <span class="badge-status red-team"><i class="bi bi-gem me-1"></i> AMD Best Value</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rx7800xt" alt="Radeon RX 7800 XT" onerror="handleImgError(this, 'rx7800xt')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">Radeon RX 7800 XT</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">AMD's most acclaimed 1440p graphics card. High 16GB VRAM memory buffer, superior frame pacing, and exceptional value per dollar.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">16GB</div><div class="spec-label">GDDR6</div></div>
+                            <div class="spec-item"><div class="spec-value">2,430</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">3,840</div><div class="spec-label">Stream Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$499</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rx7800xt')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('Radeon RX 7800 XT 16GB', 499)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 10: RTX 4090 -->
+            <div class="col-md-6 col-xl-4 gpu-card-col" data-brand="nvidia" data-series="40" data-popular="false" data-vram="24">
+                <div class="vibe-card d-flex flex-column">
+                    <div class="card-img-wrapper">
+                        <div class="card-badges-header">
+                            <span class="badge-brand">NVIDIA</span>
+                            <span class="badge-status value"><i class="bi bi-trophy-fill me-1"></i> 24GB Titan</span>
+                        </div>
+                        <img class="gpu-display-img" data-key="rtx4090" alt="GeForce RTX 4090" onerror="handleImgError(this, 'rtx4090')">
+                    </div>
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="mb-2 fw-bold text-uppercase text-white">GeForce RTX 4090</h5>
+                        <p class="text-muted small" style="font-size: 0.88rem; line-height: 1.5;">The proven king of rendering architecture. Delivering blistering frame rates, unmatched compute, and visual fidelity in Unreal Engine 5 and Blender.</p>
+                        <div class="card-specs mt-auto">
+                            <div class="spec-item"><div class="spec-value">24GB</div><div class="spec-label">G6X</div></div>
+                            <div class="spec-item"><div class="spec-value">2,520</div><div class="spec-label">MHz Boost</div></div>
+                            <div class="spec-item"><div class="spec-value">16,384</div><div class="spec-label">CUDA Cores</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <small class="text-muted d-block fw-bold" style="font-size: 0.72rem;">PRICE ALLOCATION</small>
+                                <h4 class="text-accent mb-0 fw-bold">$1,599</h4>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-custom px-3 py-2" title="Quick Specs" onclick="openQuickView('rtx4090')"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-vibe px-4 py-2" onclick="checkoutItem('GeForce RTX 4090 24GB', 1599)"><i class="bi bi-cart-plus me-1"></i> Addtocart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row border-bottom border-secondary pb-4 mb-4">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4 class="fw-bold text-white d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-lightning-charge-fill text-accent"></i> VIBE GRAPHICS
+                    </h4>
+                    <p class="text-muted small">Premium hardware acquisition platform. Featuring the world's most desired rendering architectures with instant digital allocation.</p>
+                    <div class="wallet-badge d-inline-flex mt-2" style="font-size: 0.9rem;">
+                        <i class="bi bi-wallet2"></i> App Wallet Balance: $<span id="footerWallet">999,999</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">PAGES (เมนู)</h6>
+                    <div class="footer-links">
+                        <a href="index.html">Home (หน้าแรก)</a>
+                        <a href="store.html">Store (สินค้า)</a>
+                        <a href="promotions.html">Promotions (โปรโมชัน)</a>
+                        <a href="payment.html">Payment (การชำระเงิน)</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">SUPPORT</h6>
+                    <div class="footer-links">
+                        <a href="contact.html">Contact Us (ติดต่อเรา)</a>
+                        <a href="reviews.html">Reviews (ความคิดเห็น)</a>
+                        <a href="#" class="text-accent mt-3" onclick="resetWallet(); return false;"><i class="bi bi-arrow-counterclockwise me-1"></i> Reset Fake Money</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 mt-4 mt-lg-0">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">PROJECT ASSIGNMENT</h6>
+                    <p class="text-muted small mb-1">Subject: Web Application Architecture</p>
+                    <p class="text-muted small mb-1">Theme: VibeCoding Hardware Store</p>
+                    <p class="text-muted small">Tech: HTML5, CSS3, Bootstrap 5, JS</p>
+                </div>
+            </div>
+            <div class="text-center text-muted small pb-2">
+                &copy; 2026 VIBE GRAPHICS. For educational demonstration purposes only.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Quick View Modal -->
+    <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge-status flagship position-static py-1 px-3" id="modalBadge">Flagship</span>
+                        <h5 class="modal-title fw-bold text-white mb-0" id="quickViewModalTitle">GPU Specifications</h5>
+                    </div>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-5 text-center">
+                            <div class="card-img-wrapper rounded-3 mb-3" style="height: 220px;">
+                                <img id="modalImg" src="" alt="GPU Preview" class="img-fluid">
+                            </div>
+                            <h3 class="text-accent fw-bold mb-1" id="modalPrice">$1,999</h3>
+                            <small class="text-muted text-uppercase fw-bold">Instant Wallet Allocation</small>
+                        </div>
+                        <div class="col-md-7">
+                            <h4 class="fw-bold text-white mb-2" id="modalName">GeForce RTX 5090</h4>
+                            <p class="text-muted small mb-4" id="modalDesc"></p>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+                                        <small class="spec-label d-block">Architecture</small>
+                                        <span class="spec-value fs-6" id="modalArch">Blackwell</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+                                        <small class="spec-label d-block">Video Memory</small>
+                                        <span class="spec-value fs-6" id="modalMemory">32GB GDDR7</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+                                        <small class="spec-label d-block">Boost Clock</small>
+                                        <span class="spec-value fs-6" id="modalBoost">2,900 MHz</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+                                        <small class="spec-label d-block">Cores / Compute</small>
+                                        <span class="spec-value fs-6" id="modalCores">24,576 Cores</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+                                        <small class="spec-label d-block">Power Draw (TDP)</small>
+                                        <span class="spec-value fs-6" id="modalPower">500W</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+                                        <small class="spec-label d-block">Interface</small>
+                                        <span class="spec-value fs-6" id="modalInterface">PCIe 5.0 x16</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-custom px-4 py-2" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-vibe px-4 py-2" id="modalBtnOrder"><i class="bi bi-cart-plus me-1"></i> Proceed to Addtocart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification -->
+    <div id="customToast">
+        <i class="bi bi-check-circle-fill fs-3 text-accent"></i>
+        <div>
+            <strong class="d-block text-accent fw-bold" id="toastTitle">Success</strong>
+            <span id="toastMessage" class="small">Action completed successfully.</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Centralized Logic -->
+    <script src="script.js"></script>
+</body>
+
+</html>

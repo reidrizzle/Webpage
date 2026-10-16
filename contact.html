@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact (ติดต่อเรา) | Vibe Graphics - Premium GPU Store</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts: Inter & Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Custom Theme Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Top Announcement Banner -->
+    <div class="vip-banner py-2 text-center text-white">
+        <div class="container d-flex justify-content-center align-items-center gap-2">
+            <i class="bi bi-stars text-accent fs-5"></i>
+            <span><strong class="text-accent fw-bold">Billboard VIP Season:</strong> Secure your flagship GPU allocation today! Your simulated wallet comes pre-loaded with $999,999 fake money.</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 36px; height: 36px; background: var(--gradient-primary) !important;">
+                    <i class="bi bi-lightning-charge-fill text-white fs-5"></i>
+                </div>
+                VIBE GRAPHICS
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="bi bi-list text-light fs-1"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto gap-1 gap-lg-2 gap-xl-3 mt-3 mt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house-door-fill"></i>
+                            <span class="nav-label">Home</span>
+                            <small class="nav-sub">(หน้าแรก)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="store.html">
+                            <i class="bi bi-gpu-card"></i>
+                            <span class="nav-label">Store</span>
+                            <small class="nav-sub">(สินค้า)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="promotions.html">
+                            <i class="bi bi-tags-fill"></i>
+                            <span class="nav-label">Promotions</span>
+                            <small class="nav-sub">(โปรโมชัน)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="payment.html">
+                            <i class="bi bi-credit-card-fill"></i>
+                            <span class="nav-label">Payment</span>
+                            <small class="nav-sub">(การชำระเงิน)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="contact.html">
+                            <i class="bi bi-telephone-fill"></i>
+                            <span class="nav-label">Contact</span>
+                            <small class="nav-sub">(ติดต่อเรา)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reviews.html">
+                            <i class="bi bi-chat-square-text-fill"></i>
+                            <span class="nav-label">Reviews</span>
+                            <small class="nav-sub">(ความคิดเห็น)</small>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center mt-3 mt-lg-0">
+                    <div class="wallet-badge">
+                        <div class="wallet-dot"></div>
+                        $<span id="walletBalance">999,999</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header Section -->
+    <section class="py-5" style="background: linear-gradient(180deg, rgba(26, 16, 48, 0.7) 0%, transparent 100%);">
+        <div class="container text-center">
+            <span class="badge-status flagship d-inline-block mb-3 px-3 py-1">HARDWARE CONCIERGE & SUPPORT</span>
+            <h1 class="display-5 fw-bold text-white mb-3">Direct Engineering Concierge</h1>
+            <p class="text-muted mx-auto lead" style="max-width: 700px;">
+                Have technical questions regarding PCI Express 5.0 bandwidth, TDP thermal load sizing, or global dispatch schedules? Our team is on standby.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact & FAQ Section -->
+    <section class="py-4 pb-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Contact Form & FAQ Accordion -->
+                <div class="col-lg-7">
+                    <!-- Inquiry Form -->
+                    <div class="vibe-card p-4 p-md-5 mb-4">
+                        <h4 class="text-white fw-bold mb-4 d-flex align-items-center gap-2">
+                            <i class="bi bi-envelope-paper text-accent"></i> Transmit Engineering Inquiry
+                        </h4>
+
+                        <form id="contactForm" onsubmit="event.preventDefault(); showToast('Inquiry Transmitted', 'Our hardware specialists will reply within 4 hours.'); this.reset();">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-light small fw-bold">Your Name (ชื่อของคุณ) <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Sarah Connor" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-light small fw-bold">Email Address (อีเมล) <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" placeholder="sarah@resistance.ai" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-light small fw-bold">Inquiry Category (ประเภทคำถาม)</label>
+                                    <select class="form-select">
+                                        <option selected>Technical Compatibility & Sizing</option>
+                                        <option>RTX 50-Series Blackwell Pre-Order</option>
+                                        <option>Enterprise Multi-GPU Cluster</option>
+                                        <option>Custom Liquid-Loop Integration</option>
+                                        <option>Educational Project Demonstration</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-light small fw-bold">Hardware Architecture</label>
+                                    <select class="form-select">
+                                        <option selected>GeForce RTX 5090 (32GB GDDR7)</option>
+                                        <option>GeForce RTX 5080 (16GB GDDR7)</option>
+                                        <option>Radeon RX 7900 XTX (24GB)</option>
+                                        <option>GeForce RTX 4090 (24GB GDDR6X)</option>
+                                        <option>General Hardware Platform</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-light small fw-bold">Message Details (รายละเอียดข้อความ) <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" rows="4" placeholder="Detail your chassis specifications, power supply wattage, and target rendering engine..." required></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-vibe w-100 py-3 fw-bold fs-5">
+                                <i class="bi bi-send-fill me-2"></i> Transmit Message to Engineers
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- FAQ Section -->
+                    <div class="vibe-card p-4 p-md-5">
+                        <h4 class="text-white fw-bold mb-4 d-flex align-items-center gap-2">
+                            <i class="bi bi-patch-question-fill text-accent"></i> Frequently Answered Technical Questions
+                        </h4>
+
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item mb-3 rounded overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                                <h2 class="accordion-header" id="faqOneHeader">
+                                    <button class="accordion-button collapsed bg-transparent text-white fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne">
+                                        How does the $999,999 App Pocket Money balance work?
+                                    </button>
+                                </h2>
+                                <div id="faqOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body text-muted small lh-lg">
+                                        The wallet balance is a simulated client-side sandbox fund. You can test selecting any GPU in the store, proceed to payment, and watch your balance deduct in real-time. If you ever run low on funds, simply click <strong class="text-accent">"Reset Fake Money"</strong> in the footer to restore your balance back to $999,999!
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item mb-3 rounded overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                                <h2 class="accordion-header" id="faqTwoHeader">
+                                    <button class="accordion-button collapsed bg-transparent text-white fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo">
+                                        Are the RTX 50-Series Blackwell cards accurately benchmarked?
+                                    </button>
+                                </h2>
+                                <div id="faqTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body text-muted small lh-lg">
+                                        Yes! Our Promotions and Specs telemetry reflect the next-generation NVIDIA Blackwell microarchitecture, featuring 32GB 512-bit GDDR7 memory on the RTX 5090, DLSS 4 multi-frame neural reconstruction, and full PCIe 5.0 throughput.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item mb-3 rounded overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                                <h2 class="accordion-header" id="faqThreeHeader">
+                                    <button class="accordion-button collapsed bg-transparent text-white fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree">
+                                        How do the 3D Vector Art and Studio Photography modes work?
+                                    </button>
+                                </h2>
+                                <div id="faqThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body text-muted small lh-lg">
+                                        Our platform features an embedded procedural SVG rendering engine that dynamically draws custom dual and triple-fan GPU vector blueprints. If you prefer real product photography, click the <strong>"Switch to Studio Photos"</strong> button on the Store page!
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item rounded overflow-hidden" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                                <h2 class="accordion-header" id="faqFourHeader">
+                                    <button class="accordion-button collapsed bg-transparent text-white fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour">
+                                        What warranty and testing is provided?
+                                    </button>
+                                </h2>
+                                <div id="faqFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body text-muted small lh-lg">
+                                        Every unit passes a rigorous 48-hour FurMark thermal stress test and 3DMark TimeSpy stability loop to guarantee zero coil whine, flawless memory timings, and optimum vapor chamber contact before packaging.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direct Channels & Headquarters Info -->
+                <div class="col-lg-5">
+                    <!-- Headquarters Card -->
+                    <div class="vibe-card p-4 mb-4">
+                        <h4 class="text-white fw-bold mb-4 d-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt-fill text-accent"></i> Global Test Bench & Lab
+                        </h4>
+
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background: rgba(140, 82, 255, 0.2); border: 1px solid rgba(140, 82, 255, 0.4);">
+                                <i class="bi bi-building text-accent fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1">Bangkok Silicon Tower</h6>
+                                <p class="text-muted small mb-0">Level 42, Cyber Tower One, Sukhumvit Road, Watthana, Bangkok 10110, Thailand</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background: rgba(140, 82, 255, 0.2); border: 1px solid rgba(140, 82, 255, 0.4);">
+                                <i class="bi bi-telephone-inbound text-accent fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1">Direct Engineering Hotline</h6>
+                                <p class="text-muted small mb-0">+66 2 800 VIBE (8423) • Available 24/7</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background: rgba(140, 82, 255, 0.2); border: 1px solid rgba(140, 82, 255, 0.4);">
+                                <i class="bi bi-envelope-at text-accent fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1">Priority Support Dispatch</h6>
+                                <p class="text-muted small mb-0">concierge@vibegraphics.io</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background: rgba(140, 82, 255, 0.2); border: 1px solid rgba(140, 82, 255, 0.4);">
+                                <i class="bi bi-discord text-accent fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white fw-bold mb-1">VIBE Discord Community</h6>
+                                <p class="text-muted small mb-0">discord.gg/vibegraphics (14,800+ Overclockers)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lab Bench Status Badge -->
+                    <div class="vibe-card p-4 text-center">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" style="background: rgba(34, 197, 94, 0.15); border: 1px solid #22c55e;">
+                            <span class="rounded-circle bg-success" style="width: 8px; height: 8px; display: inline-block;"></span>
+                            <span class="text-success fw-bold small">Direct Dispatch Hub: ONLINE</span>
+                        </div>
+                        <h5 class="text-white fw-bold mb-2">Simulated Sandbox Active</h5>
+                        <p class="text-muted small mb-3">All orders placed in the store test the client-side wallet mechanics instantly with no payment gateway friction.</p>
+                        <a href="store.html" class="btn btn-outline-custom w-100 py-2">
+                            <i class="bi bi-gpu-card me-1"></i> Visit Hardware Store
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row border-bottom border-secondary pb-4 mb-4">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4 class="fw-bold text-white d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-lightning-charge-fill text-accent"></i> VIBE GRAPHICS
+                    </h4>
+                    <p class="text-muted small">Premium hardware acquisition platform. Featuring the world's most desired rendering architectures with instant digital allocation.</p>
+                    <div class="wallet-badge d-inline-flex mt-2" style="font-size: 0.9rem;">
+                        <i class="bi bi-wallet2"></i> App Wallet Balance: $<span id="footerWallet">999,999</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">PAGES (เมนู)</h6>
+                    <div class="footer-links">
+                        <a href="index.html">Home (หน้าแรก)</a>
+                        <a href="store.html">Store (สินค้า)</a>
+                        <a href="promotions.html">Promotions (โปรโมชัน)</a>
+                        <a href="payment.html">Payment (การชำระเงิน)</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">SUPPORT</h6>
+                    <div class="footer-links">
+                        <a href="contact.html">Contact Us (ติดต่อเรา)</a>
+                        <a href="reviews.html">Reviews (ความคิดเห็น)</a>
+                        <a href="#" class="text-accent mt-3" onclick="resetWallet(); return false;"><i class="bi bi-arrow-counterclockwise me-1"></i> Reset Fake Money</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 mt-4 mt-lg-0">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">PROJECT ASSIGNMENT</h6>
+                    <p class="text-muted small mb-1">Subject: Web Application Architecture</p>
+                    <p class="text-muted small mb-1">Theme: VibeCoding Hardware Store</p>
+                    <p class="text-muted small">Tech: HTML5, CSS3, Bootstrap 5, JS</p>
+                </div>
+            </div>
+            <div class="text-center text-muted small pb-2">
+                &copy; 2026 VIBE GRAPHICS. For educational demonstration purposes only.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Toast Notification -->
+    <div id="customToast">
+        <i class="bi bi-check-circle-fill fs-3 text-accent"></i>
+        <div>
+            <strong class="d-block text-accent fw-bold" id="toastTitle">Success</strong>
+            <span id="toastMessage" class="small">Action completed successfully.</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Centralized Logic -->
+    <script src="script.js"></script>
+</body>
+
+</html>

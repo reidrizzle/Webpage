@@ -1,0 +1,291 @@
+/* ====================================================================
+   CYBER-TECH & FUTURISTIC GAMING GPU STORE STYLESHEET
+   Glassmorphism, Neon RGB Glows, Sci-Fi Typography & Dark Mode
+   ==================================================================== */
+
+:root {
+  --bg-darker: #060911;
+  --bg-dark: #0a0f1d;
+  --bg-card: rgba(15, 23, 42, 0.75);
+  --bg-card-hover: rgba(22, 33, 59, 0.9);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glass-bright: rgba(255, 255, 255, 0.2);
+  
+  /* Cyber Accent Colors */
+  --neon-nvidia: #00FF66;
+  --neon-nvidia-glow: rgba(0, 255, 102, 0.35);
+  --neon-amd: #FF0055;
+  --neon-amd-glow: rgba(255, 0, 85, 0.35);
+  --neon-intel: #00F0FF;
+  --neon-intel-glow: rgba(0, 240, 255, 0.35);
+  --neon-purple: #8B5CF6;
+  --neon-purple-glow: rgba(139, 92, 246, 0.35);
+  --neon-gold: #F59E0B;
+
+  /* Typography */
+  --font-scifi: 'Orbitron', 'Rajdhani', sans-serif;
+  --font-thai: 'Prompt', 'Kanit', sans-serif;
+}
+
+/* Reset & Global */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-darker);
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(0, 240, 255, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(0, 255, 102, 0.04) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  color: #E2E8F0;
+  font-family: var(--font-thai);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.font-scifi {
+  font-family: var(--font-scifi) !important;
+  letter-spacing: 0.05em;
+}
+
+/* Futuristic Scanline Effect Overlay (Subtle) */
+.cyber-grid-overlay {
+  position: relative;
+}
+.cyber-grid-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 50%, rgba(0,0,0,0.15) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.35;
+  z-index: 1;
+}
+
+/* Glassmorphism Cards */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-elevated {
+  background: rgba(18, 26, 47, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+/* Card Hover Micro-Interactions */
+.gpu-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.gpu-card:hover {
+  transform: translateY(-8px);
+}
+
+/* Dynamic Brand Glowing Highlights on Card Hover */
+.gpu-card.brand-nvidia:hover {
+  border-color: var(--neon-nvidia);
+  box-shadow: 0 14px 40px var(--neon-nvidia-glow), 0 0 15px rgba(0, 255, 102, 0.2);
+}
+
+.gpu-card.brand-amd:hover {
+  border-color: var(--neon-amd);
+  box-shadow: 0 14px 40px var(--neon-amd-glow), 0 0 15px rgba(255, 0, 85, 0.2);
+}
+
+.gpu-card.brand-intel:hover {
+  border-color: var(--neon-intel);
+  box-shadow: 0 14px 40px var(--neon-intel-glow), 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+/* Image Wrappers */
+.gpu-img-container {
+  height: 210px;
+  overflow: hidden;
+  position: relative;
+  background: radial-gradient(circle, rgba(30, 41, 59, 0.6) 0%, rgba(10, 15, 29, 0.95) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gpu-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 1rem;
+  transition: transform 0.4s ease;
+}
+
+.gpu-card:hover .gpu-img-container img {
+  transform: scale(1.08) rotate(-1deg);
+}
+
+/* Badges */
+.badge-nvidia {
+  background: rgba(0, 255, 102, 0.12);
+  color: var(--neon-nvidia);
+  border: 1px solid rgba(0, 255, 102, 0.4);
+}
+
+.badge-amd {
+  background: rgba(255, 0, 85, 0.12);
+  color: #ff3377;
+  border: 1px solid rgba(255, 0, 85, 0.4);
+}
+
+.badge-intel {
+  background: rgba(0, 240, 255, 0.12);
+  color: var(--neon-intel);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+}
+
+/* Spec Chips */
+.spec-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-scifi);
+  font-size: 0.75rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  color: #94A3B8;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Neon Cyber Buttons */
+.btn-cyber-primary {
+  background: linear-gradient(135deg, #00F0FF, #8B5CF6);
+  color: #050811;
+  font-weight: 700;
+  font-family: var(--font-scifi);
+  letter-spacing: 0.05em;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.35);
+  transition: all 0.25s ease;
+}
+.btn-cyber-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 240, 255, 0.55);
+  color: #000;
+}
+
+.btn-cyber-nvidia {
+  background: #00FF66;
+  color: #050811;
+  font-weight: 700;
+  font-family: var(--font-scifi);
+  box-shadow: 0 4px 18px var(--neon-nvidia-glow);
+  transition: all 0.25s ease;
+}
+.btn-cyber-nvidia:hover {
+  background: #22ff77;
+  box-shadow: 0 6px 25px rgba(0, 255, 102, 0.6);
+  color: #000;
+}
+
+.btn-cyber-outline {
+  background: transparent;
+  border: 1px solid var(--border-glass-bright);
+  color: #E2E8F0;
+  font-family: var(--font-scifi);
+  transition: all 0.25s ease;
+}
+.btn-cyber-outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #00F0FF;
+  color: #00F0FF;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+}
+
+.btn-cyber-danger {
+  background: rgba(255, 0, 85, 0.15);
+  border: 1px solid var(--neon-amd);
+  color: #FF3377;
+  font-family: var(--font-scifi);
+  transition: all 0.25s ease;
+}
+.btn-cyber-danger:hover {
+  background: var(--neon-amd);
+  color: #fff;
+  box-shadow: 0 0 20px var(--neon-amd-glow);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-darker);
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* SweetAlert2 Cyber Theme Override */
+.swal2-popup.cyber-swal {
+  background: #0B1120 !important;
+  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+  box-shadow: 0 10px 40px rgba(0, 240, 255, 0.25) !important;
+  color: #F8FAFC !important;
+  border-radius: 16px !important;
+  font-family: var(--font-thai) !important;
+}
+.swal2-title.cyber-swal-title {
+  color: #00F0FF !important;
+  font-family: var(--font-scifi) !important;
+}
+
+/* Print Stylesheet for Reports */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .no-print, nav, footer, .btn, #filterSection {
+    display: none !important;
+  }
+  .glass-panel, .glass-panel-elevated {
+    background: #ffffff !important;
+    border: 1px solid #cccccc !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+  }
+  .text-white, .text-slate-300, .text-slate-400 {
+    color: #000000 !important;
+  }
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+  th, td {
+    border: 1px solid #333333 !important;
+    color: #000000 !important;
+    padding: 8px !important;
+  }
+  .print-header {
+    display: block !important;
+    margin-bottom: 20px;
+  }
+}

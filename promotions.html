@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promotions (โปรโมชัน) | Vibe Graphics - Premium GPU Store</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts: Inter & Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Custom Theme Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Top Announcement Banner -->
+    <div class="vip-banner py-2 text-center text-white">
+        <div class="container d-flex justify-content-center align-items-center gap-2">
+            <i class="bi bi-stars text-accent fs-5"></i>
+            <span><strong class="text-accent fw-bold">Billboard VIP Season:</strong> Secure your flagship GPU allocation today! Your simulated wallet comes pre-loaded with $999,999 fake money.</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 36px; height: 36px; background: var(--gradient-primary) !important;">
+                    <i class="bi bi-lightning-charge-fill text-white fs-5"></i>
+                </div>
+                VIBE GRAPHICS
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="bi bi-list text-light fs-1"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto gap-1 gap-lg-2 gap-xl-3 mt-3 mt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house-door-fill"></i>
+                            <span class="nav-label">Home</span>
+                            <small class="nav-sub">(หน้าแรก)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="store.html">
+                            <i class="bi bi-gpu-card"></i>
+                            <span class="nav-label">Store</span>
+                            <small class="nav-sub">(สินค้า)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="promotions.html">
+                            <i class="bi bi-tags-fill"></i>
+                            <span class="nav-label">Promotions</span>
+                            <small class="nav-sub">(โปรโมชัน)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="payment.html">
+                            <i class="bi bi-credit-card-fill"></i>
+                            <span class="nav-label">Payment</span>
+                            <small class="nav-sub">(การชำระเงิน)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">
+                            <i class="bi bi-telephone-fill"></i>
+                            <span class="nav-label">Contact</span>
+                            <small class="nav-sub">(ติดต่อเรา)</small>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reviews.html">
+                            <i class="bi bi-chat-square-text-fill"></i>
+                            <span class="nav-label">Reviews</span>
+                            <small class="nav-sub">(ความคิดเห็น)</small>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center mt-3 mt-lg-0">
+                    <div class="wallet-badge">
+                        <div class="wallet-dot"></div>
+                        $<span id="walletBalance">999,999</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content: Promotions Page -->
+    <main class="container page-content" id="promotions">
+        <!-- Benchmark Scale Container -->
+        <div class="perf-container mb-5">
+            <span class="vibe-tag mb-3"><i class="bi bi-speedometer2"></i> BENCHMARK TELEMETRY</span>
+            <h1 class="display-5 fw-bold mb-3">GPU <span class="text-gradient">PERFORMANCE SCALE</span></h1>
+            <p class="text-muted mb-5">Compare real-world compute output across modern rendering architectures. Telemetry reflects rigorous 3DMark TimeSpy rasterization and 4K Cyberpunk 2077 ray tracing benchmarks.</p>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <!-- Bar 0: RTX 5090 -->
+                    <div class="perf-row">
+                        <div class="perf-label">
+                            <span class="text-light fw-bold">NVIDIA RTX 5090 (32GB GDDR7)</span>
+                            <span class="text-accent">125% Relative Performance / 45,000+ TimeSpy</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-nvidia progress-bar-striped progress-bar-animated"
+                                role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bar 1: RTX 4090 -->
+                    <div class="perf-row">
+                        <div class="perf-label">
+                            <span class="text-light fw-bold">NVIDIA RTX 4090 (24GB G6X)</span>
+                            <span class="text-accent">100% Relative Performance / 35,000+ TimeSpy</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-nvidia progress-bar-striped progress-bar-animated"
+                                role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bar 2: RX 7900 XTX -->
+                    <div class="perf-row">
+                        <div class="perf-label">
+                            <span class="text-light fw-bold">AMD Radeon RX 7900 XTX (24GB)</span>
+                            <span class="text-accent">88% Relative Performance / 29,500+ TimeSpy</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-amd progress-bar-striped progress-bar-animated"
+                                role="progressbar" style="width: 88%" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bar 3: RTX 4080 SUPER -->
+                    <div class="perf-row">
+                        <div class="perf-label">
+                            <span class="text-light fw-bold">NVIDIA RTX 4080 SUPER (16GB)</span>
+                            <span class="text-accent">82% Relative Performance / 28,000+ TimeSpy</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-tier3 progress-bar-striped progress-bar-animated"
+                                role="progressbar" style="width: 82%" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bar 4: RTX 4070 Ti -->
+                    <div class="perf-row">
+                        <div class="perf-label">
+                            <span class="text-light fw-bold">NVIDIA RTX 4070 Ti (12GB)</span>
+                            <span class="text-accent">65% Relative Performance / 22,500+ TimeSpy</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-tier4 progress-bar-striped progress-bar-animated"
+                                role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <button class="btn btn-outline-custom px-4 py-2" id="btnBenchmarkToggle" onclick="toggleBenchmarkMode()">
+                    <i class="bi bi-sliders me-2"></i> Switch to Ray Tracing Mode
+                </button>
+                <a href="store.html" class="btn btn-vibe px-4 py-2">
+                    <i class="bi bi-cart-check me-2"></i> View Winning GPUs
+                </a>
+            </div>
+        </div>
+
+        <!-- Complimentary Game Bundle Promo Card -->
+        <div class="card bg-transparent border-0 mb-4 rounded-4"
+            style="background: linear-gradient(45deg, rgba(140, 82, 255, 0.12), rgba(217, 70, 239, 0.12)) !important; border: 1px solid var(--accent-primary) !important;">
+            <div class="card-body p-5 text-center">
+                <h3 class="fw-bold mb-3"><i class="bi bi-gift-fill me-2 text-accent"></i> COMPLIMENTARY GAME BUNDLE INCLUDED</h3>
+                <p class="mb-4 text-sub" style="max-width: 720px; margin: 0 auto; line-height: 1.8;">
+                    Purchase any flagship or high-VRAM architecture today and receive a digital activation key for <strong class="text-white">"Cyberpunk 2077: Phantom Liberty"</strong> alongside a 1-year premium GeForce NOW Ultimate tier subscription.
+                </p>
+                <a href="store.html" class="btn btn-vibe px-5 py-3 fs-6">
+                    <i class="bi bi-award-fill me-2"></i> Claim with Hardware Allocation
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row border-bottom border-secondary pb-4 mb-4">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4 class="fw-bold text-white d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-lightning-charge-fill text-accent"></i> VIBE GRAPHICS
+                    </h4>
+                    <p class="text-muted small">Premium hardware acquisition platform. Featuring the world's most desired rendering architectures with instant digital allocation.</p>
+                    <div class="wallet-badge d-inline-flex mt-2" style="font-size: 0.9rem;">
+                        <i class="bi bi-wallet2"></i> App Wallet Balance: $<span id="footerWallet">999,999</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">PAGES (เมนู)</h6>
+                    <div class="footer-links">
+                        <a href="index.html">Home (หน้าแรก)</a>
+                        <a href="store.html">Store (สินค้า)</a>
+                        <a href="promotions.html">Promotions (โปรโมชัน)</a>
+                        <a href="payment.html">Payment (การชำระเงิน)</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">SUPPORT</h6>
+                    <div class="footer-links">
+                        <a href="contact.html">Contact Us (ติดต่อเรา)</a>
+                        <a href="reviews.html">Reviews (ความคิดเห็น)</a>
+                        <a href="#" class="text-accent mt-3" onclick="resetWallet(); return false;"><i class="bi bi-arrow-counterclockwise me-1"></i> Reset Fake Money</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 mt-4 mt-lg-0">
+                    <h6 class="text-white mb-3 text-uppercase fw-bold" style="letter-spacing: 1px;">PROJECT ASSIGNMENT</h6>
+                    <p class="text-muted small mb-1">Subject: Web Application Architecture</p>
+                    <p class="text-muted small mb-1">Theme: VibeCoding Hardware Store</p>
+                    <p class="text-muted small">Tech: HTML5, CSS3, Bootstrap 5, JS</p>
+                </div>
+            </div>
+            <div class="text-center text-muted small pb-2">
+                &copy; 2026 VIBE GRAPHICS. For educational demonstration purposes only.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Toast Notification -->
+    <div id="customToast">
+        <i class="bi bi-check-circle-fill fs-3 text-accent"></i>
+        <div>
+            <strong class="d-block text-accent fw-bold" id="toastTitle">Success</strong>
+            <span id="toastMessage" class="small">Action completed successfully.</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Centralized Logic -->
+    <script src="script.js"></script>
+</body>
+
+</html>
