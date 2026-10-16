@@ -199,27 +199,49 @@ require_once __DIR__ . '/includes/navbar.php';
         </div>
       </div>
 
-      <!-- Right Hero: Wallet Balance Card -->
+      <!-- Right Hero: Wallet Balance Card (Members only) or Admin Privileges Hub -->
       <div class="lg:col-span-5 flex flex-col justify-center">
-        <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-slate-900/90 to-purple-950/40 border border-amber-500/30 relative shadow-inner">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-xs font-mono uppercase text-amber-400 font-bold flex items-center gap-1.5">
-              <i class="fa-solid fa-wallet text-amber-400"></i> SIMULATED WALLET BALANCE
-            </span>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
-              ● พร้อมสั่งซื้อ
-            </span>
+        <?php if (!isAdmin()): ?>
+          <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-slate-900/90 to-purple-950/40 border border-amber-500/30 relative shadow-inner">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-mono uppercase text-amber-400 font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-wallet text-amber-400"></i> SIMULATED WALLET BALANCE
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+                ● พร้อมสั่งซื้อ
+              </span>
+            </div>
+            
+            <div class="text-3xl sm:text-4xl font-black font-scifi text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 my-1">
+              <?= formatPrice($user['wallet_balance'] ?? 9999999.00) ?>
+            </div>
+            
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono mt-2 pt-2 border-t border-slate-800/80">
+              <span>วงเงินจำลองสำหรับทดสอบสั่งซื้อ</span>
+              <span class="text-amber-400/90 font-semibold">ไม่จำกัดยอด</span>
+            </div>
           </div>
-          
-          <div class="text-3xl sm:text-4xl font-black font-scifi text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 my-1">
-            <?= formatPrice($user['wallet_balance'] ?? 9999999.00) ?>
+        <?php else: ?>
+          <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-slate-900/90 via-slate-950 to-amber-950/30 border border-amber-500/30 relative shadow-inner">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-mono uppercase text-amber-400 font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved text-amber-400"></i> ADMINISTRATOR PRIVILEGES
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 font-semibold">
+                ● FULL ACCESS
+              </span>
+            </div>
+            
+            <div class="text-2xl sm:text-3xl font-black font-scifi text-amber-300 my-1">
+              INVENTORY MASTER
+            </div>
+            
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono mt-2 pt-2 border-t border-slate-800/80">
+              <span>สิทธิ์เพิ่ม แก้ไข และจัดการคลังสินค้า</span>
+              <a href="manage.php" class="text-cyan-400 hover:underline font-semibold">จัดการคลังสินค้า ➔</a>
+            </div>
           </div>
-          
-          <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono mt-2 pt-2 border-t border-slate-800/80">
-            <span>วงเงินจำลองสำหรับทดสอบสั่งซื้อ</span>
-            <span class="text-amber-400/90 font-semibold">ไม่จำกัดยอด</span>
-          </div>
-        </div>
+        <?php endif; ?>
       </div>
 
     </div>
@@ -346,21 +368,23 @@ require_once __DIR__ . '/includes/navbar.php';
             </div>
           </div>
 
-          <!-- Reset Wallet Toggle -->
-          <div class="p-4 rounded-2xl bg-purple-950/20 border border-purple-500/30 flex items-center justify-between">
-            <div class="pr-3">
-              <span class="text-xs font-bold text-purple-300 block flex items-center gap-1.5">
-                <i class="fa-solid fa-arrows-rotate text-purple-400"></i> เติมเงินวอลเล็ตจำลองให้เต็ม ฿9,999,999.00
-              </span>
-              <span class="text-[10px] text-slate-400 font-mono">
-                เปิดสวิตช์นี้เพื่อรีเซ็ตยอดเงินในกระเป๋ากลับเป็น ฿9,999,999 สำหรับทดสอบซื้อสินค้า
-              </span>
+          <!-- Reset Wallet Toggle (Only for Shoppers / Members) -->
+          <?php if (!isAdmin()): ?>
+            <div class="p-4 rounded-2xl bg-purple-950/20 border border-purple-500/30 flex items-center justify-between">
+              <div class="pr-3">
+                <span class="text-xs font-bold text-purple-300 block flex items-center gap-1.5">
+                  <i class="fa-solid fa-arrows-rotate text-purple-400"></i> เติมเงินวอลเล็ตจำลองให้เต็ม ฿9,999,999.00
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">
+                  เปิดสวิตช์นี้เพื่อรีเซ็ตยอดเงินในกระเป๋ากลับเป็น ฿9,999,999 สำหรับทดสอบซื้อสินค้า
+                </span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                <input type="checkbox" name="reset_wallet" value="1" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+              </label>
             </div>
-            <label class="relative inline-flex items-center cursor-pointer shrink-0">
-              <input type="checkbox" name="reset_wallet" value="1" class="sr-only peer">
-              <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-            </label>
-          </div>
+          <?php endif; ?>
 
           <!-- Submit Button -->
           <button type="submit" class="w-full btn-cyber-primary py-3.5 rounded-xl text-sm font-bold tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20">
@@ -414,16 +438,29 @@ require_once __DIR__ . '/includes/navbar.php';
               </div>
             <?php endforeach; ?>
           <?php else: ?>
-            <div class="text-center py-12 text-slate-500 font-mono text-xs">
-              <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center mb-3 text-slate-600 border border-slate-800">
-                <i class="fa-solid fa-cart-shopping text-2xl"></i>
+            <?php if (isAdmin()): ?>
+              <div class="text-center py-12 text-slate-500 font-mono text-xs">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center mb-3 text-amber-400 border border-amber-500/30">
+                  <i class="fa-solid fa-shield-halved text-2xl"></i>
+                </div>
+                <p class="text-slate-300 font-semibold mb-1">โหมดผู้ดูแลระบบ (Admin Mode)</p>
+                <p class="text-slate-500 text-[11px] mb-4">บัญชีนี้มีสิทธิ์เพิ่มและแก้ไขข้อมูลสินค้าในระบบ (ไม่ต้องสั่งซื้อสินค้า)</p>
+                <a href="manage.php" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2">
+                  <i class="fa-solid fa-boxes-stacked"></i> จัดการคลังการ์ดจอ ➔
+                </a>
               </div>
-              <p class="text-slate-400 font-semibold mb-1">ยังไม่มีประวัติการซื้อการ์ดจอ</p>
-              <p class="text-slate-500 text-[11px] mb-4">คุณมีวงเงิน ฿9,999,999 พร้อมสั่งซื้อได้ทันที</p>
-              <a href="index.php" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2">
-                <i class="fa-solid fa-bag-shopping"></i> ไปเลือกซื้อการ์ดจอรุ่นแรกเลย ➔
-              </a>
-            </div>
+            <?php else: ?>
+              <div class="text-center py-12 text-slate-500 font-mono text-xs">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center mb-3 text-slate-600 border border-slate-800">
+                  <i class="fa-solid fa-cart-shopping text-2xl"></i>
+                </div>
+                <p class="text-slate-400 font-semibold mb-1">ยังไม่มีประวัติการซื้อการ์ดจอ</p>
+                <p class="text-slate-500 text-[11px] mb-4">คุณมีวงเงิน ฿9,999,999 พร้อมสั่งซื้อได้ทันที</p>
+                <a href="index.php" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2">
+                  <i class="fa-solid fa-bag-shopping"></i> ไปเลือกซื้อการ์ดจอรุ่นแรกเลย ➔
+                </a>
+              </div>
+            <?php endif; ?>
           <?php endif; ?>
         </div>
 

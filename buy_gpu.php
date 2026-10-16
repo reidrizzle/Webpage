@@ -7,6 +7,12 @@ require_once __DIR__ . '/config/db.php';
 
 requireLogin();
 
+// Block Admin from Buying (Admins can only Add/Edit inventory, no purchasing or wallet)
+if (isAdmin()) {
+    header("Location: index.php?msg=admin_cannot_buy");
+    exit;
+}
+
 $pdo = getDBConnection();
 $gpuId = (int)($_POST['gpu_id'] ?? $_GET['gpu_id'] ?? 0);
 $userId = (int)$_SESSION['user_id'];
@@ -60,16 +66,18 @@ try {
                                 WHERE id = :id");
     $stmtStock->execute([':id' => $gpuId]);
 
-    // 3.3 Create Order Record
+    // 3.3 Create Order Record with precise Bangkok local time
     $orderCode = 'ORD-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
-    $stmtOrder = $pdo->prepare("INSERT INTO orders (order_code, user_id, gpu_id, quantity, unit_price, total_price, status) 
-                               VALUES (:code, :uid, :gid, 1, :uprice, :tprice, 'completed')");
+    $orderDate = date('Y-m-d H:i:s');
+    $stmtOrder = $pdo->prepare("INSERT INTO orders (order_code, user_id, gpu_id, quantity, unit_price, total_price, status, order_date) 
+                               VALUES (:code, :uid, :gid, 1, :uprice, :tprice, 'completed', :odate)");
     $stmtOrder->execute([
         ':code'   => $orderCode,
         ':uid'    => $userId,
         ':gid'    => $gpuId,
         ':uprice' => $price,
-        ':tprice' => $price
+        ':tprice' => $price,
+        ':odate'  => $orderDate
     ]);
 
     $pdo->commit();

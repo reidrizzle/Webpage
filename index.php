@@ -206,36 +206,36 @@ if ($pdo) {
         <!-- Body Content -->
         <div class="p-5 flex-1 flex flex-col justify-between">
           <div>
-            <div class="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1">
+            <div class="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1 truncate h-5 flex items-center" title="<?= e($gpu['brand_name']) ?> • <?= e($gpu['chipset_model']) ?>">
               <?= e($gpu['brand_name']) ?> • <?= e($gpu['chipset_model']) ?>
             </div>
-            <h3 class="font-bold text-white text-sm line-clamp-2 hover:text-cyan-400 transition-colors" title="<?= e($gpu['model_name']) ?>">
+            <h3 class="font-bold text-white text-sm line-clamp-2 h-10 leading-snug hover:text-cyan-400 transition-colors" title="<?= e($gpu['model_name']) ?>">
               <?= e($gpu['model_name']) ?>
             </h3>
 
             <!-- Quick Specs Chips Grid -->
             <div class="grid grid-cols-2 gap-1.5 my-3">
-              <div class="spec-chip">
+              <div class="spec-chip h-7 flex items-center gap-1.5">
                 <i class="fa-solid fa-memory text-cyan-400 text-[10px]"></i>
-                <span><?= e($gpu['vram_gb']) ?>GB <?= e($gpu['memory_type']) ?></span>
+                <span class="truncate"><?= e($gpu['vram_gb']) ?>GB <?= e($gpu['memory_type']) ?></span>
               </div>
-              <div class="spec-chip">
+              <div class="spec-chip h-7 flex items-center gap-1.5">
                 <i class="fa-solid fa-arrows-split-up-and-left text-indigo-400 text-[10px]"></i>
-                <span><?= e($gpu['bus_width']) ?>-bit</span>
+                <span class="truncate"><?= e($gpu['bus_width']) ?>-bit</span>
               </div>
-              <div class="spec-chip">
+              <div class="spec-chip h-7 flex items-center gap-1.5">
                 <i class="fa-solid fa-gauge-high text-emerald-400 text-[10px]"></i>
-                <span><?= e($gpu['boost_clock']) ?> MHz</span>
+                <span class="truncate"><?= e($gpu['boost_clock']) ?> MHz</span>
               </div>
-              <div class="spec-chip">
+              <div class="spec-chip h-7 flex items-center gap-1.5">
                 <i class="fa-solid fa-bolt text-amber-400 text-[10px]"></i>
-                <span><?= e($gpu['tdp_watts']) ?>W TDP</span>
+                <span class="truncate"><?= e($gpu['tdp_watts']) ?>W TDP</span>
               </div>
             </div>
           </div>
 
-          <!-- Stock & Price Footer -->
-          <div class="pt-3 border-t border-slate-800/80 mt-2">
+          <!-- Stock & Price Footer (Pinned to bottom via mt-auto) -->
+          <div class="pt-3 border-t border-slate-800/80 mt-auto">
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs text-slate-400">สถานะสต็อก:</span>
               <?php if ($gpu['stock'] > 5): ?>
@@ -254,28 +254,37 @@ if ($pdo) {
             </div>
 
             <div class="flex items-center justify-between gap-2 mt-1">
-              <div>
-                <span class="text-[10px] text-slate-500 uppercase font-mono block">ราคาพิเศษ</span>
-                <span class="font-scifi font-black text-base sm:text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-300">
+              <div class="min-w-0">
+                <span class="text-[10px] text-slate-500 uppercase font-mono block leading-tight">ราคาพิเศษ</span>
+                <span class="font-scifi font-black text-base sm:text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-300 truncate block">
                   <?= formatPrice($gpu['price']) ?>
                 </span>
               </div>
               
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-1.5 shrink-0">
                 <button onclick='openQuickView(<?= json_encode($gpu, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' 
-                        class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors" title="ดูสเปคด่วน">
+                        class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ดูสเปคด่วน">
                   <i class="fa-solid fa-eye"></i>
                 </button>
 
-                <?php if ($gpu['stock'] > 0): ?>
-                  <button onclick="confirmBuy(<?= $gpu['id'] ?>, '<?= addslashes(e($gpu['model_name'])) ?>', <?= $gpu['price'] ?>)" 
-                          class="btn-cyber-primary px-3 py-1.5 rounded-lg text-xs font-scifi font-bold flex items-center gap-1">
-                    <i class="fa-solid fa-cart-shopping text-[11px]"></i> สั่งซื้อ
-                  </button>
+                <?php if (isAdmin()): ?>
+                  <!-- Admin Edit Button (No buying for Admin) -->
+                  <a href="edit_gpu.php?id=<?= $gpu['id'] ?>" 
+                     class="px-3 py-2 rounded-xl text-xs font-scifi font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0" title="แก้ไขข้อมูลการ์ดจอนี้">
+                    <i class="fa-solid fa-pen-to-square text-xs"></i> <span>แก้ไข</span>
+                  </a>
                 <?php else: ?>
-                  <button disabled class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-500 text-[10px] font-mono cursor-not-allowed">
-                    สินค้าหมด
-                  </button>
+                  <!-- Member Buy Button (Clean Horizontal Pill like bottom-right card) -->
+                  <?php if ($gpu['stock'] > 0): ?>
+                    <button onclick="confirmBuy(<?= $gpu['id'] ?>, '<?= addslashes(e($gpu['model_name'])) ?>', <?= $gpu['price'] ?>)" 
+                            class="btn-cyber-primary px-3 py-2 rounded-xl text-xs font-scifi font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 shadow-md shadow-cyan-500/20">
+                      <i class="fa-solid fa-cart-shopping text-xs"></i> <span>สั่งซื้อ</span>
+                    </button>
+                  <?php else: ?>
+                    <button disabled class="px-2.5 py-2 rounded-xl bg-slate-800 text-slate-500 text-xs font-mono cursor-not-allowed whitespace-nowrap shrink-0">
+                      สินค้าหมด
+                    </button>
+                  <?php endif; ?>
                 <?php endif; ?>
               </div>
             </div>

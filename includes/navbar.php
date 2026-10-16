@@ -1,18 +1,20 @@
 <?php
 /**
  * Navigation Bar Component
- * Perfectly Balanced 3-Column Center-Aligned Cyber Navigation
- * Role-Based Access Control (Admin vs Member) & Real-time Wallet Display
+ * Responsive Cyber Navigation Bar (No Overlap)
+ * Role-Based Access Control:
+ * - Admin: Inventory CRUD management only (No wallet, No buy)
+ * - Member: Shopping & Simulated Wallet (฿9,999,999)
  */
 $currentPage = basename($_SERVER['PHP_SELF']);
-$currentWallet = isLoggedIn() ? getUserWallet($_SESSION['user_id']) : 0;
+$currentWallet = (isLoggedIn() && !isAdmin()) ? getUserWallet($_SESSION['user_id']) : 0;
 ?>
-<header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-xl">
+<header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-xl">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="relative flex items-center justify-between h-20">
+    <div class="flex items-center justify-between h-20 gap-3">
       
-      <!-- 1. Left Column: Brand Logo -->
-      <div class="flex items-center justify-start shrink-0 z-10">
+      <!-- 1. Left: Brand Logo (shrink-0) -->
+      <div class="flex items-center justify-start shrink-0">
         <a href="index.php" class="flex items-center gap-3 group">
           <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300">
             <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
@@ -30,56 +32,58 @@ $currentWallet = isLoggedIn() ? getUserWallet($_SESSION['user_id']) : 0;
         </a>
       </div>
 
-      <!-- 2. Center Column: Floating Cyber Pill Navigation Bar (Mathematically Centered) -->
-      <div class="hidden lg:flex absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 items-center justify-center z-10 pointer-events-auto">
+      <!-- 2. Center: Floating Cyber Pill Navigation Bar (Flex-1 Center, Never Collides!) -->
+      <div class="hidden md:flex items-center justify-center flex-1 min-w-0 px-2">
         <nav class="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-1.5 flex items-center gap-1 shadow-xl shadow-black/50 backdrop-blur-md">
-          <a href="index.php" class="px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all <?= $currentPage === 'index.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
-            <i class="fa-solid fa-house mr-1.5 text-xs"></i> หน้าแรก
+          <a href="index.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'index.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+            <i class="fa-solid fa-house mr-1 text-xs"></i> หน้าแรก
           </a>
-          <a href="search.php" class="px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all <?= $currentPage === 'search.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
-            <i class="fa-solid fa-magnifying-glass mr-1.5 text-xs"></i> ค้นหาการ์ดจอ
+          <a href="search.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'search.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+            <i class="fa-solid fa-magnifying-glass mr-1 text-xs"></i> ค้นหา
           </a>
 
           <!-- Admin Only Items -->
           <?php if (isAdmin()): ?>
-            <a href="manage.php" class="px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all <?= in_array($currentPage, ['manage.php', 'edit_gpu.php']) ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
-              <i class="fa-solid fa-shield-halved mr-1.5 text-xs"></i> คลัง (Admin)
+            <a href="manage.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= in_array($currentPage, ['manage.php', 'edit_gpu.php']) ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
+              <i class="fa-solid fa-shield-halved mr-1 text-xs"></i> จัดการคลัง
             </a>
-            <a href="add_gpu.php" class="px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all <?= $currentPage === 'add_gpu.php' ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
-              <i class="fa-solid fa-plus-circle mr-1.5 text-xs"></i> เพิ่มการ์ดจอ
+            <a href="add_gpu.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'add_gpu.php' ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
+              <i class="fa-solid fa-plus-circle mr-1 text-xs"></i> เพิ่มการ์ดจอ
             </a>
           <?php endif; ?>
 
-          <a href="reports.php" class="px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
-            <i class="fa-solid fa-chart-pie mr-1.5 text-xs"></i> หน้ารายงาน
+          <a href="reports.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+            <i class="fa-solid fa-chart-pie mr-1 text-xs"></i> รายงาน
           </a>
         </nav>
       </div>
 
-      <!-- 3. Right Column: Wallet & Profile Actions -->
-      <div class="flex items-center justify-end gap-2.5 shrink-0 z-10">
+      <!-- 3. Right: Wallet & Profile Actions (shrink-0) -->
+      <div class="flex items-center justify-end gap-2.5 shrink-0">
         <?php if (isLoggedIn()): ?>
           
-          <!-- Wallet Balance Pill -->
-          <a href="profile.php" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all group shadow-sm shadow-amber-500/10" title="คลิกเพื่อจัดการโปรไฟล์และกระเป๋าเงิน">
-            <div class="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
-              <i class="fa-solid fa-wallet text-xs"></i>
-            </div>
-            <div class="flex flex-col text-left">
-              <span class="text-[8px] font-mono text-slate-400 uppercase tracking-wider leading-none">WALLET</span>
-              <span class="font-scifi font-bold text-xs text-amber-300">
-                <?= formatPrice($currentWallet) ?>
-              </span>
-            </div>
-          </a>
+          <!-- Wallet Balance Pill (SHOW ONLY FOR SHOPPERS / MEMBERS - Admin has NO wallet) -->
+          <?php if (!isAdmin()): ?>
+            <a href="profile.php" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all group shadow-sm shadow-amber-500/10" title="คลิกเพื่อจัดการโปรไฟล์และกระเป๋าเงิน">
+              <div class="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform shrink-0">
+                <i class="fa-solid fa-wallet text-xs"></i>
+              </div>
+              <div class="flex flex-col text-left">
+                <span class="text-[8px] font-mono text-slate-400 uppercase tracking-wider leading-none">WALLET</span>
+                <span class="font-scifi font-bold text-xs text-amber-300 whitespace-nowrap">
+                  <?= formatPrice($currentWallet) ?>
+                </span>
+              </div>
+            </a>
+          <?php endif; ?>
 
           <!-- User Profile Pill -->
           <a href="profile.php" class="flex items-center gap-2 pl-1.5 py-1 pr-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition-colors group">
             <div class="w-8 h-8 rounded-full ring-2 ring-cyan-500/40 overflow-hidden bg-slate-800 flex items-center justify-center shrink-0">
               <img src="<?= e($_SESSION['avatar_url'] ?? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80') ?>" alt="Avatar" class="w-full h-full object-cover">
             </div>
-            <div class="hidden xl:flex flex-col text-left">
-              <span class="text-xs font-semibold text-slate-200 group-hover:text-cyan-300 transition-colors truncate max-w-[110px]"><?= e($_SESSION['full_name'] ?? $_SESSION['username']) ?></span>
+            <div class="hidden sm:flex flex-col text-left">
+              <span class="text-xs font-semibold text-slate-200 group-hover:text-cyan-300 transition-colors truncate max-w-[120px]"><?= e($_SESSION['full_name'] ?? $_SESSION['username']) ?></span>
               <span class="text-[8px] font-scifi uppercase px-1 rounded <?= isAdmin() ? 'bg-amber-500/20 text-amber-400' : 'bg-cyan-500/20 text-cyan-400' ?>">
                 <?= isAdmin() ? 'ADMIN' : 'MEMBER' ?>
               </span>
@@ -87,7 +91,7 @@ $currentWallet = isLoggedIn() ? getUserWallet($_SESSION['user_id']) : 0;
           </a>
 
           <!-- Logout Button -->
-          <a href="logout.php" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 rounded-xl transition-colors" title="ออกจากระบบ">
+          <a href="logout.php" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 rounded-xl transition-colors shrink-0" title="ออกจากระบบ">
             <i class="fa-solid fa-right-from-bracket text-base"></i>
           </a>
 
@@ -125,7 +129,7 @@ $currentWallet = isLoggedIn() ? getUserWallet($_SESSION['user_id']) : 0;
 
     <?php if (isAdmin()): ?>
       <a href="manage.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'manage.php' ? 'text-amber-400 bg-amber-950/60' : 'text-amber-300 hover:bg-slate-800' ?>">
-        <i class="fa-solid fa-shield-halved mr-2"></i> จัดการคลัง (Admin)
+        <i class="fa-solid fa-shield-halved mr-2"></i> จัดการคลังสินค้า (Admin)
       </a>
       <a href="add_gpu.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'add_gpu.php' ? 'text-amber-400 bg-amber-950/60' : 'text-amber-300 hover:bg-slate-800' ?>">
         <i class="fa-solid fa-plus-circle mr-2"></i> เพิ่มการ์ดจอ (Admin)
@@ -139,10 +143,17 @@ $currentWallet = isLoggedIn() ? getUserWallet($_SESSION['user_id']) : 0;
     <div class="pt-4 border-t border-slate-800">
       <?php if (isLoggedIn()): ?>
         <div class="px-3 py-2 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs text-slate-400">วงเงินกระเป๋า:</span>
-            <span class="font-scifi font-bold text-amber-400 text-sm"><?= formatPrice($currentWallet) ?></span>
-          </div>
+          <?php if (!isAdmin()): ?>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-400">วงเงินกระเป๋า:</span>
+              <span class="font-scifi font-bold text-amber-400 text-sm"><?= formatPrice($currentWallet) ?></span>
+            </div>
+          <?php else: ?>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-400">โหมดการทำงาน:</span>
+              <span class="font-scifi font-bold text-amber-400 text-xs">ADMINISTRATOR</span>
+            </div>
+          <?php endif; ?>
           <div class="flex items-center justify-between pt-1">
             <a href="profile.php" class="text-sm font-semibold text-cyan-400 hover:underline">
               <i class="fa-solid fa-user-gear mr-1"></i> แก้ไขโปรไฟล์ & อัปโหลดรูป
