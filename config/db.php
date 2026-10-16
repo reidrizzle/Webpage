@@ -118,3 +118,29 @@ function getUserWallet($userId) {
         return 9999999.00;
     }
 }
+
+/**
+ * Get total quantity of items in shopping cart
+ */
+function getCartCount() {
+    if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
+        return 0;
+    }
+    return (int)array_sum($_SESSION['cart']);
+}
+
+/**
+ * Add an item to cart helper
+ */
+function addToCart($gpuId, $qty = 1) {
+    if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+    $gpuId = (int)$gpuId;
+    $qty = max(1, (int)$qty);
+    if (isset($_SESSION['cart'][$gpuId])) {
+        $_SESSION['cart'][$gpuId] += $qty;
+    } else {
+        $_SESSION['cart'][$gpuId] = $qty;
+    }
+}

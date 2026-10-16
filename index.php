@@ -61,15 +61,21 @@ if ($pdo) {
         </p>
 
         <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-          <a href="#catalog" class="btn-cyber-primary px-7 py-3 rounded-xl text-sm flex items-center gap-2">
-            <i class="fa-solid fa-gamepad"></i> ดูสินค้าการ์ดจอทั้งหมด
+          <a href="products.php" class="btn-cyber-primary px-7 py-3 rounded-xl text-sm flex items-center gap-2">
+            <i class="fa-solid fa-layer-group"></i> ดูสินค้าการ์ดจอทั้งหมด
           </a>
-          <a href="search.php" class="btn-cyber-outline px-6 py-3 rounded-xl text-sm flex items-center gap-2">
-            <i class="fa-solid fa-filter"></i> ตัวกรองสเปคขั้นสูง
+          <a href="promotions.php" class="px-6 py-3 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 hover:text-white hover:bg-rose-900/60 transition-colors text-sm font-scifi flex items-center gap-2">
+            <i class="fa-solid fa-tags"></i> โปรโมชั่นพิเศษ
           </a>
-          <a href="reports.php" class="px-5 py-3 rounded-xl bg-purple-950/50 border border-purple-500/40 text-purple-300 hover:text-white hover:bg-purple-900/60 transition-colors text-sm font-scifi flex items-center gap-2">
-            <i class="fa-solid fa-chart-line"></i> สรุปรายงานคลัง
-          </a>
+          <?php if (isAdmin()): ?>
+            <a href="reports.php" class="px-5 py-3 rounded-xl bg-purple-950/50 border border-purple-500/40 text-purple-300 hover:text-white hover:bg-purple-900/60 transition-colors text-sm font-scifi flex items-center gap-2">
+              <i class="fa-solid fa-chart-line"></i> สรุปรายงานคลัง
+            </a>
+          <?php else: ?>
+            <a href="cart.php" class="px-5 py-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cyan-400 transition-colors text-sm font-scifi flex items-center gap-2">
+              <i class="fa-solid fa-cart-shopping text-cyan-400"></i> ตะกร้าสินค้า
+            </a>
+          <?php endif; ?>
         </div>
 
         <!-- Metric Counters -->
@@ -274,8 +280,12 @@ if ($pdo) {
                     <i class="fa-solid fa-pen-to-square text-xs"></i> <span>แก้ไข</span>
                   </a>
                 <?php else: ?>
-                  <!-- Member Buy Button (Clean Horizontal Pill like bottom-right card) -->
+                  <!-- Member Buy & Cart Buttons -->
                   <?php if ($gpu['stock'] > 0): ?>
+                    <button onclick="addToCartAjax(<?= $gpu['id'] ?>)" 
+                            class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ใส่ตะกร้าสินค้า">
+                      <i class="fa-solid fa-cart-plus"></i>
+                    </button>
                     <button onclick="confirmBuy(<?= $gpu['id'] ?>, '<?= addslashes(e($gpu['model_name'])) ?>', <?= $gpu['price'] ?>)" 
                             class="btn-cyber-primary px-3 py-2 rounded-xl text-xs font-scifi font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 shadow-md shadow-cyan-500/20">
                       <i class="fa-solid fa-cart-shopping text-xs"></i> <span>สั่งซื้อ</span>
@@ -307,5 +317,39 @@ if ($pdo) {
   </div>
 
 </section>
+
+<script>
+function addToCartAjax(id) {
+  fetch('add_to_cart.php?ajax=1&gpu_id=' + id)
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'success') {
+        Swal.fire({
+          icon: 'success',
+          title: 'เพิ่มลงตะกร้าแล้ว',
+          text: data.message,
+          background: '#0f172a',
+          color: '#f8fafc',
+          showCancelButton: true,
+          confirmButtonText: 'ไปที่ตะกร้าสินค้า',
+          cancelButtonText: 'เลือกสินค้าต่อ',
+          confirmButtonColor: '#00F0FF'
+        }).then(result => {
+          if (result.isConfirmed) {
+            window.location.href = 'cart.php';
+          }
+        });
+        const badge = document.getElementById('navCartCount');
+        if (badge) {
+          badge.textContent = data.cart_count;
+          badge.classList.remove('bg-slate-800', 'text-slate-400');
+          badge.classList.add('bg-cyan-500', 'text-slate-950', 'animate-pulse');
+        }
+      } else {
+        Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: data.message, background: '#0f172a', color: '#f8fafc' });
+      }
+    });
+}
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

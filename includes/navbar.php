@@ -1,13 +1,14 @@
 <?php
 /**
  * Navigation Bar Component
- * Responsive Cyber Navigation Bar (No Overlap)
+ * Responsive Cyber Navigation Bar
  * Role-Based Access Control:
- * - Admin: Inventory CRUD management only (No wallet, No buy)
- * - Member: Shopping & Simulated Wallet (฿9,999,999)
+ * - Admin: หน้าแรก, จัดการคลัง, เพิ่มการ์ดจอ, รายงานสรุปคลัง (No wallet, No buy)
+ * - User ทั่วไป: หน้าแรก, สินค้าทั้งหมด, โปรโมชั่น, เปรียบเทียบ, คำสั่งซื้อของฉัน, ตะกร้าสินค้า
  */
 $currentPage = basename($_SERVER['PHP_SELF']);
 $currentWallet = (isLoggedIn() && !isAdmin()) ? getUserWallet($_SESSION['user_id']) : 0;
+$cartCount = getCartCount();
 ?>
 <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-xl">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,29 +33,61 @@ $currentWallet = (isLoggedIn() && !isAdmin()) ? getUserWallet($_SESSION['user_id
         </a>
       </div>
 
-      <!-- 2. Center: Floating Cyber Pill Navigation Bar (Flex-1 Center, Never Collides!) -->
-      <div class="hidden md:flex items-center justify-center flex-1 min-w-0 px-2">
+      <!-- 2. Center: Floating Cyber Pill Navigation Bar -->
+      <div class="hidden xl:flex items-center justify-center flex-1 min-w-0 px-2">
         <nav class="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-1.5 flex items-center gap-1 shadow-xl shadow-black/50 backdrop-blur-md">
-          <a href="index.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'index.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
-            <i class="fa-solid fa-house mr-1 text-xs"></i> หน้าแรก
-          </a>
-          <a href="search.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'search.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
-            <i class="fa-solid fa-magnifying-glass mr-1 text-xs"></i> ค้นหา
-          </a>
-
-          <!-- Admin Only Items -->
+          
           <?php if (isAdmin()): ?>
+            <!-- ================= ADMIN NAVIGATION ================= -->
+            <a href="index.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'index.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-house mr-1 text-xs"></i> หน้าแรก
+            </a>
             <a href="manage.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= in_array($currentPage, ['manage.php', 'edit_gpu.php']) ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
               <i class="fa-solid fa-shield-halved mr-1 text-xs"></i> จัดการคลัง
             </a>
             <a href="add_gpu.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'add_gpu.php' ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
               <i class="fa-solid fa-plus-circle mr-1 text-xs"></i> เพิ่มการ์ดจอ
             </a>
+            <a href="reports.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-chart-pie mr-1 text-xs"></i> รายงานสรุปคลัง
+            </a>
+
+          <?php else: ?>
+            <!-- ================= USER ทั่วไป NAVIGATION ================= -->
+            <!-- 1. หน้าแรก -->
+            <a href="index.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'index.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-house mr-1 text-xs"></i> หน้าแรก
+            </a>
+
+            <!-- 2. สินค้าทั้งหมด -->
+            <a href="products.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= in_array($currentPage, ['products.php', 'search.php']) ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-layer-group mr-1 text-xs"></i> สินค้าทั้งหมด
+            </a>
+
+            <!-- 3. โปรโมชั่น -->
+            <a href="promotions.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'promotions.php' ? 'text-rose-400 bg-rose-950/80 border border-rose-500/40 font-scifi shadow-[0_0_12px_rgba(255,0,85,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-tags mr-1 text-xs text-rose-400"></i> โปรโมชั่น
+            </a>
+
+            <!-- 4. เปรียบเทียบ -->
+            <a href="compare.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'compare.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-code-compare mr-1 text-xs"></i> เปรียบเทียบ
+            </a>
+
+            <!-- 5. คำสั่งซื้อของฉัน -->
+            <a href="orders.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'orders.php' ? 'text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 font-scifi shadow-[0_0_12px_rgba(16,185,129,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-box-archive mr-1 text-xs text-emerald-400"></i> คำสั่งซื้อของฉัน
+            </a>
+
+            <!-- 6. ตะกร้าสินค้า -->
+            <a href="cart.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center <?= $currentPage === 'cart.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-cart-shopping mr-1.5 text-xs"></i> ตะกร้าสินค้า
+              <span id="navCartCount" class="ml-1.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold <?= $cartCount > 0 ? 'bg-cyan-500 text-slate-950 animate-pulse' : 'bg-slate-800 text-slate-400' ?>">
+                <?= $cartCount ?>
+              </span>
+            </a>
           <?php endif; ?>
 
-          <a href="reports.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi shadow-[0_0_12px_rgba(0,240,255,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
-            <i class="fa-solid fa-chart-pie mr-1 text-xs"></i> รายงาน
-          </a>
         </nav>
       </div>
 
@@ -62,7 +95,7 @@ $currentWallet = (isLoggedIn() && !isAdmin()) ? getUserWallet($_SESSION['user_id
       <div class="flex items-center justify-end gap-2.5 shrink-0">
         <?php if (isLoggedIn()): ?>
           
-          <!-- Wallet Balance Pill (SHOW ONLY FOR SHOPPERS / MEMBERS - Admin has NO wallet) -->
+          <!-- Wallet Balance Pill (Only for Members, Admin has NO wallet) -->
           <?php if (!isAdmin()): ?>
             <a href="profile.php" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all group shadow-sm shadow-amber-500/10" title="คลิกเพื่อจัดการโปรไฟล์และกระเป๋าเงิน">
               <div class="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform shrink-0">
@@ -107,7 +140,7 @@ $currentWallet = (isLoggedIn() && !isAdmin()) ? getUserWallet($_SESSION['user_id
         <?php endif; ?>
 
         <!-- Mobile Menu Hamburger Button -->
-        <div class="flex md:hidden items-center ml-1">
+        <div class="flex xl:hidden items-center ml-1">
           <button type="button" onclick="toggleMobileMenu()" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none" aria-label="Toggle Menu">
             <i class="fa-solid fa-bars text-xl"></i>
           </button>
@@ -119,12 +152,9 @@ $currentWallet = (isLoggedIn() && !isAdmin()) ? getUserWallet($_SESSION['user_id
   </div>
 
   <!-- Mobile Drawer Menu -->
-  <div id="mobileMenu" class="hidden md:hidden glass-panel border-b border-slate-800 px-4 pt-2 pb-6 space-y-2">
+  <div id="mobileMenu" class="hidden xl:hidden glass-panel border-b border-slate-800 px-4 pt-2 pb-6 space-y-2">
     <a href="index.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'index.php' ? 'text-cyan-400 bg-cyan-950/60' : 'text-slate-300 hover:bg-slate-800' ?>">
       <i class="fa-solid fa-house mr-2"></i> หน้าแรก
-    </a>
-    <a href="search.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'search.php' ? 'text-cyan-400 bg-cyan-950/60' : 'text-slate-300 hover:bg-slate-800' ?>">
-      <i class="fa-solid fa-magnifying-glass mr-2"></i> ค้นหาการ์ดจอ
     </a>
 
     <?php if (isAdmin()): ?>
@@ -134,11 +164,26 @@ $currentWallet = (isLoggedIn() && !isAdmin()) ? getUserWallet($_SESSION['user_id
       <a href="add_gpu.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'add_gpu.php' ? 'text-amber-400 bg-amber-950/60' : 'text-amber-300 hover:bg-slate-800' ?>">
         <i class="fa-solid fa-plus-circle mr-2"></i> เพิ่มการ์ดจอ (Admin)
       </a>
+      <a href="reports.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/60' : 'text-slate-300 hover:bg-slate-800' ?>">
+        <i class="fa-solid fa-chart-pie mr-2"></i> หน้ารายงานสรุปคลัง (Admin)
+      </a>
+    <?php else: ?>
+      <a href="products.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'products.php' ? 'text-cyan-400 bg-cyan-950/60' : 'text-slate-300 hover:bg-slate-800' ?>">
+        <i class="fa-solid fa-layer-group mr-2"></i> สินค้าทั้งหมด
+      </a>
+      <a href="promotions.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'promotions.php' ? 'text-rose-400 bg-rose-950/60' : 'text-rose-300 hover:bg-slate-800' ?>">
+        <i class="fa-solid fa-tags mr-2 text-rose-400"></i> โปรโมชั่น
+      </a>
+      <a href="compare.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'compare.php' ? 'text-cyan-400 bg-cyan-950/60' : 'text-slate-300 hover:bg-slate-800' ?>">
+        <i class="fa-solid fa-code-compare mr-2"></i> เปรียบเทียบการ์ดจอ
+      </a>
+      <a href="orders.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'orders.php' ? 'text-emerald-400 bg-emerald-950/60' : 'text-emerald-300 hover:bg-slate-800' ?>">
+        <i class="fa-solid fa-box-archive mr-2"></i> คำสั่งซื้อของฉัน
+      </a>
+      <a href="cart.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'cart.php' ? 'text-cyan-400 bg-cyan-950/60' : 'text-slate-300 hover:bg-slate-800' ?>">
+        <i class="fa-solid fa-cart-shopping mr-2"></i> ตะกร้าสินค้า (<?= $cartCount ?>)
+      </a>
     <?php endif; ?>
-
-    <a href="reports.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/60' : 'text-slate-300 hover:bg-slate-800' ?>">
-      <i class="fa-solid fa-chart-pie mr-2"></i> หน้ารายงานสถิติ
-    </a>
     
     <div class="pt-4 border-t border-slate-800">
       <?php if (isLoggedIn()): ?>

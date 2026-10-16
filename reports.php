@@ -5,6 +5,9 @@
  * Report 2: Low Stock Alert & Highest Value Flagships + Print-Ready View (window.print())
  */
 $pageTitle = "หน้ารายงานสรุปคลังสินค้าและสถิติ (Executive Reports)";
+require_once __DIR__ . '/config/db.php';
+requireAdmin();
+
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navbar.php';
 
