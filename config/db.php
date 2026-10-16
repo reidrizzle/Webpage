@@ -18,9 +18,9 @@ define('DB_PORT', getenv('DB_PORT') ?: '3306');
 define('DB_CHARSET', 'utf8mb4');
 
 // App Info
-define('SITE_NAME', 'CYBER-GPU STORE');
-define('SITE_TAGLINE', 'Next-Gen Gaming & AI Compute Hardware');
-define('CURRENCY_SYMBOL', '฿');
+if (!defined('SITE_NAME')) define('SITE_NAME', 'CYBER-GPU STORE');
+if (!defined('SITE_TAGLINE')) define('SITE_TAGLINE', 'Next-Gen Gaming & AI Compute Hardware');
+if (!defined('CURRENCY_SYMBOL')) define('CURRENCY_SYMBOL', '฿');
 
 /**
  * Get PDO Database Connection
