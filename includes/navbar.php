@@ -40,17 +40,20 @@ $cartCount = getCartCount();
           
           <?php if (isAdmin()): ?>
             <!-- ================= ADMIN NAVIGATION ================= -->
-            <a href="index.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'index.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+            <a href="index.php" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'index.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
               <i class="fa-solid fa-house mr-1 text-xs"></i> หน้าแรก
             </a>
-            <a href="manage.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= in_array($currentPage, ['manage.php', 'edit_gpu.php']) ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
+            <a href="manage.php" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= in_array($currentPage, ['manage.php', 'edit_gpu.php']) ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
               <i class="fa-solid fa-shield-halved mr-1 text-xs"></i> จัดการคลัง
             </a>
-            <a href="add_gpu.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'add_gpu.php' ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
+            <a href="add_gpu.php" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'add_gpu.php' ? 'text-amber-400 bg-amber-950/80 border border-amber-500/40 font-scifi' : 'text-amber-400/90 hover:text-amber-300 hover:bg-amber-950/40' ?>">
               <i class="fa-solid fa-plus-circle mr-1 text-xs"></i> เพิ่มการ์ดจอ
             </a>
-            <a href="reports.php" class="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
-              <i class="fa-solid fa-chart-pie mr-1 text-xs"></i> รายงานสรุปคลัง
+            <a href="sales_report.php" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'sales_report.php' ? 'text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 font-scifi shadow-[0_0_12px_rgba(16,185,129,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-chart-line mr-1 text-xs text-emerald-400"></i> รายงานยอดขาย
+            </a>
+            <a href="reports.php" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/80 border border-cyan-500/40 font-scifi' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' ?>">
+              <i class="fa-solid fa-chart-pie mr-1 text-xs"></i> สรุปคลัง
             </a>
 
           <?php else: ?>
@@ -170,6 +173,9 @@ $cartCount = getCartCount();
       </a>
       <a href="add_gpu.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'add_gpu.php' ? 'text-amber-400 bg-amber-950/60' : 'text-amber-300 hover:bg-slate-800' ?>">
         <i class="fa-solid fa-plus-circle mr-2"></i> เพิ่มการ์ดจอ (Admin)
+      </a>
+      <a href="sales_report.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'sales_report.php' ? 'text-emerald-400 bg-emerald-950/60' : 'text-emerald-300 hover:bg-slate-800' ?>">
+        <i class="fa-solid fa-chart-line mr-2 text-emerald-400"></i> รายงานยอดขาย & สินค้าขายดี (Admin)
       </a>
       <a href="reports.php" class="block px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'reports.php' ? 'text-cyan-400 bg-cyan-950/60' : 'text-slate-300 hover:bg-slate-800' ?>">
         <i class="fa-solid fa-chart-pie mr-2"></i> หน้ารายงานสรุปคลัง (Admin)

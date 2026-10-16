@@ -116,6 +116,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':id'            => $gpuId
             ]);
 
+            // Check if stock changed (Restock or stock adjustment)
+            $oldStock = (int)$gpu['stock'];
+            if ($oldStock !== $stock) {
+                $stockDiff = $stock - $oldStock;
+                $diffText = ($stockDiff > 0 ? "+{$stockDiff}" : "{$stockDiff}") . " ชิ้น";
+                logInventoryAction('restock', $gpuId, $model_name, $oldStock, $stock, $stockDiff, "ปรับสต็อกการ์ดจอ ({$diffText}, เดิม {$oldStock} -> ใหม่ {$stock} ชิ้น)");
+            }
+
+            // Log general edit
+            logInventoryAction('edit', $gpuId, $model_name, $oldStock, $stock, 0, "อัปเดตข้อมูลการ์ดจอ (ราคา " . formatPrice($price) . ", สเปก, สถานะ: {$status})");
+
             header("Location: manage.php?msg=updated");
             exit;
         } catch (PDOException $e) {

@@ -151,3 +151,36 @@ INSERT INTO `orders` (`id`, `order_code`, `user_id`, `gpu_id`, `quantity`, `unit
 (4, 'ORD-2026-004', 2, 8, 2, 12900.00, 25800.00, '2026-10-08 11:30:00', 'completed'),
 (5, 'ORD-2026-005', 2, 2, 1, 42900.00, 42900.00, '2026-10-12 16:05:40', 'completed'),
 (6, 'ORD-2026-006', 2, 11, 3, 10900.00, 32700.00, '2026-10-15 09:22:15', 'completed');
+
+-- --------------------------------------------------------------------
+-- 6. Table: inventory_logs (ประวัติการเติมสต็อกและบันทึกการเพิ่ม/ลบสินค้า)
+-- --------------------------------------------------------------------
+DROP TABLE IF EXISTS `inventory_logs`;
+CREATE TABLE `inventory_logs` (
+  `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `log_type` ENUM('restock', 'add', 'edit', 'delete') NOT NULL,
+  `gpu_id` INT UNSIGNED DEFAULT NULL,
+  `model_name` VARCHAR(180) NOT NULL,
+  `user_id` INT UNSIGNED DEFAULT NULL,
+  `username` VARCHAR(50) DEFAULT 'admin',
+  `old_stock` INT DEFAULT NULL,
+  `new_stock` INT DEFAULT NULL,
+  `stock_change` INT DEFAULT NULL,
+  `action_details` TEXT DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_log_type` (`log_type`),
+  INDEX `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Mock Inventory Logs
+INSERT INTO `inventory_logs` (`id`, `log_type`, `gpu_id`, `model_name`, `user_id`, `username`, `old_stock`, `new_stock`, `stock_change`, `action_details`, `created_at`) VALUES
+(1, 'restock', 3, 'GIGABYTE GeForce RTX 4070 SUPER WINDFORCE OC 12GB', 1, 'admin', 5, 15, 10, 'เติมสต็อกสินค้าเพิ่ม +10 ชิ้น สำหรับโปรโมชั่นประจำสัปดาห์', '2026-10-16 21:30:00'),
+(2, 'restock', 1, 'ASUS ROG Strix GeForce RTX 4090 OC 24GB', 1, 'admin', 1, 4, 3, 'เติมสต็อกการ์ดจอเรือธง +3 ชิ้น จากผู้นำเข้า ASUS Thailand', '2026-10-15 14:15:00'),
+(3, 'restock', 2, 'MSI GeForce RTX 4080 SUPER 16GB Gaming X Trio', 1, 'admin', 4, 8, 4, 'เติมสต็อกสินค้า +4 ชิ้น ตอบสนองความต้องการประกอบคอม 4K', '2026-10-14 18:00:00'),
+(4, 'restock', 11, 'Intel Arc B580 Battlemage Limited 12GB GDDR6', 1, 'admin', 5, 10, 5, 'เติมสต็อกชิปเซ็ต Battlemage รุ่นใหม่ล่าสุด +5 ชิ้น', '2026-10-13 11:20:00'),
+(5, 'restock', 6, 'PowerColor Hellhound AMD Radeon RX 7800 XT 16GB', 1, 'admin', 6, 12, 6, 'เติมสต็อกล็อตใหม่ +6 ชิ้น สำหรับเกมเมอร์สาย 2K', '2026-10-11 09:45:00'),
+(6, 'add', 11, 'Intel Arc B580 Battlemage Limited 12GB GDDR6', 1, 'admin', 0, 10, 10, 'เพิ่มรายการการ์ดจอใหม่เข้าสู่ระบบ (Intel Battlemage Xe2, ราคา ฿10,900.00)', '2026-10-16 20:00:00'),
+(7, 'edit', 1, 'ASUS ROG Strix GeForce RTX 4090 OC 24GB', 1, 'admin', 4, 4, 0, 'ปรับปรุงข้อมูลราคาจำหน่ายพิเศษและอัปเดตสเปก TDP 450W', '2026-10-15 16:30:00'),
+(8, 'add', 3, 'GIGABYTE GeForce RTX 4070 SUPER WINDFORCE OC 12GB', 1, 'admin', 0, 15, 15, 'เพิ่มรายการการ์ดจอใหม่เข้าสู่ระบบ (NVIDIA Ada Lovelace, ราคา ฿24,500.00)', '2026-10-14 17:10:00'),
+(9, 'edit', 12, 'MSI Radeon RX 7600 XT GAMING X 16GB', 1, 'admin', 0, 0, 0, 'ปรับสถานะเป็นสินค้าหมดชั่วคราว (Out of Stock)', '2026-10-12 10:00:00'),
+(10, 'delete', 99, 'NVIDIA GeForce RTX 3060 Ti Twin 8GB GDDR6', 1, 'admin', 0, 0, 0, 'ลบสินค้าออกจากระบบเนื่องจากตกรุ่นและยกเลิกสายการผลิต', '2026-10-10 08:30:00');

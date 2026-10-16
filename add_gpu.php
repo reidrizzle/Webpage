@@ -89,6 +89,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':status'        => $status
             ]);
 
+            $newGpuId = (int)$pdo->lastInsertId();
+            logInventoryAction('add', $newGpuId, $model_name, 0, $stock, $stock, "เพิ่มการ์ดจอใหม่เข้าสู่ระบบ (ราคา " . formatPrice($price) . ", สต็อกเริ่มต้น {$stock} ชิ้น)");
+            if ($stock > 0) {
+                logInventoryAction('restock', $newGpuId, $model_name, 0, $stock, $stock, "เติมสต็อกตั้งต้นสำหรับสินค้าใหม่ +{$stock} ชิ้น");
+            }
+
             header("Location: manage.php?msg=added");
             exit;
         } catch (PDOException $e) {

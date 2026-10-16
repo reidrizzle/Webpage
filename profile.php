@@ -91,9 +91,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch Purchase History
+// Handle Quick Restock Submission for Admin
+$restockLogs = [];
+$catalogLogs = [];
+$allGpusList = [];
+
+if (isAdmin() && $pdo) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'quick_restock') {
+        $restockGpuId = (int)($_POST['restock_gpu_id'] ?? 0);
+        $addQty = (int)($_POST['add_qty'] ?? 0);
+        $note = trim($_POST['restock_note'] ?? '');
+
+        if ($restockGpuId > 0 && $addQty > 0) {
+            try {
+                $stmtG = $pdo->prepare("SELECT model_name, stock FROM gpus WHERE id = :id LIMIT 1");
+                $stmtG->execute([':id' => $restockGpuId]);
+                $gRow = $stmtG->fetch();
+
+                if ($gRow) {
+                    $oldS = (int)$gRow['stock'];
+                    $newS = $oldS + $addQty;
+                    $stmtU = $pdo->prepare("UPDATE gpus SET stock = :ns, status = CASE WHEN :ns <= 0 THEN 'out_of_stock' WHEN :ns <= 3 THEN 'low_stock' ELSE 'available' END WHERE id = :id");
+                    $stmtU->execute([':ns' => $newS, ':id' => $restockGpuId]);
+                    
+                    $detailNote = $note ?: "เติมสต็อกสินค้า +{$addQty} ชิ้น ผ่านหน้าแผงควบคุมแอดมิน";
+                    logInventoryAction('restock', $restockGpuId, $gRow['model_name'], $oldS, $newS, $addQty, $detailNote);
+                    $success = "เติมสต็อกสำเร็จ: {$gRow['model_name']} เพิ่ม +{$addQty} ชิ้น (คงเหลือรวม {$newS} ชิ้น)";
+                } else {
+                    $error = "ไม่พบข้อมูลการ์ดจอรุ่นที่เลือกในระบบ";
+                }
+            } catch (Exception $e) {
+                $error = "เกิดข้อผิดพลาดในการเติมสต็อก: " . $e->getMessage();
+            }
+        } else {
+            $error = "กรุณาเลือกรุ่นการ์ดจอและระบุจำนวนที่ต้องการเติมสต็อก (อย่างน้อย 1 ชิ้น)";
+        }
+    }
+
+    $restockLogs = getRestockLogs(50);
+    $catalogLogs = getCatalogLogs(50);
+    try {
+        $allGpusList = $pdo->query("SELECT id, model_name, stock, status, price FROM gpus ORDER BY model_name ASC")->fetchAll();
+    } catch (PDOException $e) {}
+}
+
+// Fetch Purchase History (For Members only)
 $orders = [];
-if ($pdo) {
+if (!isAdmin() && $pdo) {
     try {
         $stmtOrders = $pdo->prepare("SELECT o.*, g.model_name, g.image_url, c.manufacturer 
                                     FROM orders o
@@ -190,11 +234,20 @@ require_once __DIR__ . '/includes/navbar.php';
 
           <div class="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3">
             <span class="text-slate-400 font-mono text-xs bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-800">
-              <i class="fa-solid fa-shield text-cyan-400 mr-1"></i> ระดับ: <span class="text-white font-bold"><?= isAdmin() ? 'Administrator' : 'General Member' ?></span>
+              <i class="fa-solid <?= isAdmin() ? 'fa-shield-halved text-amber-400' : 'fa-shield text-cyan-400' ?> mr-1"></i> ระดับ: <span class="text-white font-bold"><?= isAdmin() ? 'Administrator' : 'General Member' ?></span>
             </span>
-            <span class="text-slate-400 font-mono text-xs bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-800">
-              <i class="fa-solid fa-bag-shopping text-purple-400 mr-1"></i> ประวัติสั่งซื้อ: <span class="text-white font-bold"><?= count($orders) ?></span> ครั้ง
-            </span>
+            <?php if (isAdmin()): ?>
+              <span class="text-slate-400 font-mono text-xs bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-800">
+                <i class="fa-solid fa-boxes-packing text-emerald-400 mr-1"></i> เติมสต็อกสินค้า: <span class="text-emerald-400 font-bold"><?= count($restockLogs) ?></span> รายการ
+              </span>
+              <span class="text-slate-400 font-mono text-xs bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-800">
+                <i class="fa-solid fa-clock-rotate-left text-cyan-400 mr-1"></i> บันทึกเพิ่ม/ลบสินค้า: <span class="text-cyan-400 font-bold"><?= count($catalogLogs) ?></span> รายการ
+              </span>
+            <?php else: ?>
+              <span class="text-slate-400 font-mono text-xs bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-800">
+                <i class="fa-solid fa-bag-shopping text-purple-400 mr-1"></i> ประวัติสั่งซื้อ: <span class="text-white font-bold"><?= count($orders) ?></span> ครั้ง
+              </span>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -395,60 +448,246 @@ require_once __DIR__ . '/includes/navbar.php';
 
     </div>
 
-    <!-- Right Column: Order History (5 cols) -->
+    <!-- Right Column: Admin Inventory Hub OR Member Order History (5 cols) -->
     <div class="lg:col-span-5 space-y-6">
-      <div class="glass-panel-elevated p-6 sm:p-7 rounded-3xl border border-slate-700/80">
-        <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-800">
-          <h3 class="font-scifi font-bold text-base text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-receipt"></i> ประวัติการสั่งซื้อการ์ดจอ
-          </h3>
-          <span class="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold">
-            <?= count($orders) ?> รายการ
-          </span>
+      
+      <?php if (isAdmin()): ?>
+        <!-- ================= ADMIN INVENTORY ACTIVITY & RESTOCK HUB ================= -->
+        <div class="glass-panel-elevated p-6 rounded-3xl border border-slate-700/80">
+          
+          <!-- Header with Quick Restock Button -->
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="font-scifi font-bold text-sm sm:text-base text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked"></i> บันทึกกิจกรรมคลังสินค้า
+              </h3>
+              <p class="text-[11px] font-mono text-slate-400 mt-0.5">INVENTORY AUDIT & RESTOCK LOGS</p>
+            </div>
+            
+            <button type="button" onclick="toggleQuickRestockForm()" 
+                    class="px-2.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-scifi font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer">
+              <i class="fa-solid fa-plus-circle"></i> เติมสต็อกด่วน
+            </button>
+          </div>
+
+          <!-- Quick Restock Collapsible Form -->
+          <div id="quickRestockFormBox" class="hidden mb-5 p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 shadow-xl shadow-black/60">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+              <span class="text-xs font-scifi font-bold text-amber-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-truck-ramp-box"></i> เติมสต็อกการ์ดจอ (Quick Restock)
+              </span>
+              <button type="button" onclick="toggleQuickRestockForm()" class="text-slate-400 hover:text-white text-xs cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            
+            <form method="POST" action="profile.php" class="space-y-3">
+              <input type="hidden" name="action" value="quick_restock">
+              
+              <div>
+                <label class="block text-[11px] font-mono text-slate-300 mb-1">เลือกรุ่นการ์ดจอที่ต้องการเติมสต็อก <span class="text-rose-400">*</span></label>
+                <select name="restock_gpu_id" required class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:border-amber-400">
+                  <option value="">-- เลือกรุ่นการ์ดจอ --</option>
+                  <?php foreach ($allGpusList as $gItem): ?>
+                    <option value="<?= $gItem['id'] ?>">
+                      <?= e($gItem['model_name']) ?> (สต็อกปัจจุบัน: <?= $gItem['stock'] ?> ชิ้น)
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[11px] font-mono text-slate-300 mb-1">จำนวนที่เติม (+ชิ้น) <span class="text-rose-400">*</span></label>
+                  <input type="number" id="quickAddQty" name="add_qty" min="1" max="999" value="5" required
+                         class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-mono text-slate-300 mb-1">ปุ่มลัดด่วน</label>
+                  <div class="grid grid-cols-3 gap-1">
+                    <button type="button" onclick="document.getElementById('quickAddQty').value = 5" class="py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] text-amber-300 font-mono">+5</button>
+                    <button type="button" onclick="document.getElementById('quickAddQty').value = 10" class="py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] text-amber-300 font-mono">+10</button>
+                    <button type="button" onclick="document.getElementById('quickAddQty').value = 20" class="py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] text-amber-300 font-mono">+20</button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-mono text-slate-300 mb-1">หมายเหตุ / ที่มาล็อตสินค้า (ทางเลือกเสริม)</label>
+                <input type="text" name="restock_note" placeholder="เช่น เติมสินค้าจากตัวแทนจำหน่าย, เตรียมจัดโปรโมชั่น"
+                       class="w-full px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:border-amber-400">
+              </div>
+
+              <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-scifi font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer">
+                <i class="fa-solid fa-check"></i> บันทึกการเติมสต็อก
+              </button>
+            </form>
+          </div>
+
+          <!-- Dual Tab Switcher (เติมสินค้า vs เพิ่ม/ลบสินค้า) -->
+          <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-950/80 border border-slate-800 mb-4">
+            <button type="button" id="btnTabRestock" onclick="switchAdminLogTab('restock')"
+                    class="flex-1 py-2 px-3 rounded-xl text-xs font-scifi font-bold transition-all bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-boxes-packing text-xs"></i>
+              <span>ประวัติการเติมสินค้า</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-amber-500/30 text-amber-200">
+                <?= count($restockLogs) ?>
+              </span>
+            </button>
+
+            <button type="button" id="btnTabCatalog" onclick="switchAdminLogTab('catalog')"
+                    class="flex-1 py-2 px-3 rounded-xl text-xs font-scifi font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+              <span>ประวัติเพิ่มหรือลบสินค้า</span>
+              <span class="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-300">
+                <?= count($catalogLogs) ?>
+              </span>
+            </button>
+          </div>
+
+          <!-- TAB 1: RESTOCK LOGS FEED -->
+          <div id="tabRestockContent" class="space-y-3 max-h-[580px] overflow-y-auto pr-1">
+            <?php if (!empty($restockLogs)): ?>
+              <?php foreach ($restockLogs as $rLog): ?>
+                <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 transition-colors">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-up text-[9px]"></i>
+                        <?= $rLog['stock_change'] > 0 ? '+' . $rLog['stock_change'] : $rLog['stock_change'] ?> ชิ้น
+                      </span>
+                      <span class="text-[10px] font-mono text-slate-500">
+                        <?= date('d/m/Y H:i', strtotime($rLog['created_at'])) ?>
+                      </span>
+                    </div>
+                    <span class="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+                      <i class="fa-solid fa-user-shield text-[9px] text-amber-400"></i> @<?= e($rLog['username'] ?: 'admin') ?>
+                    </span>
+                  </div>
+
+                  <h4 class="font-bold text-white text-xs truncate mt-2" title="<?= e($rLog['model_name']) ?>">
+                    <?= e($rLog['model_name']) ?>
+                  </h4>
+
+                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mt-1.5 pt-1.5 border-t border-slate-800/60">
+                    <div>
+                      <span>สต็อกเดิม: </span>
+                      <span class="text-slate-400"><?= $rLog['old_stock'] ?? 0 ?></span>
+                      <span class="text-amber-400 mx-1">➔</span>
+                      <span class="text-emerald-400 font-bold"><?= $rLog['new_stock'] ?? 0 ?> ชิ้น</span>
+                    </div>
+                    <a href="manage.php" class="text-cyan-400 hover:underline text-[10px]">ตรวจสอบคลัง ➔</a>
+                  </div>
+
+                  <?php if (!empty($rLog['action_details'])): ?>
+                    <p class="text-[10px] text-slate-400 font-sans mt-1.5 bg-slate-950/60 p-2 rounded-lg border border-slate-800/60 leading-relaxed">
+                      <i class="fa-solid fa-circle-info text-amber-400/80 mr-1"></i> <?= e($rLog['action_details']) ?>
+                    </p>
+                  <?php endif; ?>
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="text-center py-12 text-slate-500 font-mono text-xs">
+                <i class="fa-solid fa-boxes-packing text-2xl text-slate-600 mb-2"></i>
+                <p>ยังไม่มีประวัติการเติมสต็อก</p>
+              </div>
+            <?php endif; ?>
+          </div>
+
+          <!-- TAB 2: CATALOG ADD/EDIT/DELETE LOGS FEED -->
+          <div id="tabCatalogContent" class="hidden space-y-3 max-h-[580px] overflow-y-auto pr-1">
+            <?php if (!empty($catalogLogs)): ?>
+              <?php foreach ($catalogLogs as $cLog): ?>
+                <?php
+                  $badgeClass = 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30';
+                  $badgeIcon = 'fa-pen';
+                  $badgeText = 'แก้ไขข้อมูล';
+                  if ($cLog['log_type'] === 'add') {
+                    $badgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+                    $badgeIcon = 'fa-plus';
+                    $badgeText = 'เพิ่มสินค้าใหม่';
+                  } elseif ($cLog['log_type'] === 'delete') {
+                    $badgeClass = 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+                    $badgeIcon = 'fa-trash';
+                    $badgeText = 'ลบสินค้า';
+                  }
+                ?>
+                <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition-colors">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase border flex items-center gap-1 <?= $badgeClass ?>">
+                        <i class="fa-solid <?= $badgeIcon ?> text-[9px]"></i> <?= $badgeText ?>
+                      </span>
+                      <span class="text-[10px] font-mono text-slate-500">
+                        <?= date('d/m/Y H:i', strtotime($cLog['created_at'])) ?>
+                      </span>
+                    </div>
+                    <span class="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+                      <i class="fa-solid fa-user-shield text-[9px] text-cyan-400"></i> @<?= e($cLog['username'] ?: 'admin') ?>
+                    </span>
+                  </div>
+
+                  <h4 class="font-bold text-white text-xs truncate mt-2" title="<?= e($cLog['model_name']) ?>">
+                    <?= e($cLog['model_name']) ?>
+                  </h4>
+
+                  <p class="text-[11px] text-slate-300 font-sans mt-1.5 bg-slate-950/60 p-2 rounded-lg border border-slate-800/60 leading-relaxed">
+                    <?= e($cLog['action_details']) ?>
+                  </p>
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="text-center py-12 text-slate-500 font-mono text-xs">
+                <i class="fa-solid fa-clock-rotate-left text-2xl text-slate-600 mb-2"></i>
+                <p>ยังไม่มีบันทึกการเพิ่มหรือลบสินค้า</p>
+              </div>
+            <?php endif; ?>
+          </div>
+
         </div>
 
-        <div class="space-y-3.5 max-h-[580px] overflow-y-auto pr-1">
-          <?php if (!empty($orders)): ?>
-            <?php foreach ($orders as $ord): ?>
-              <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition-colors flex items-center gap-3.5">
-                <div class="w-14 h-14 rounded-xl bg-slate-950 p-1.5 border border-slate-800 shrink-0 flex items-center justify-center">
-                  <img src="<?= e($ord['image_url']) ?>" alt="GPU" onerror="handleImgError(this)" class="max-w-full max-h-full object-contain">
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-cyan-950 border border-cyan-500/30 text-cyan-400 font-bold">
-                      <?= e($ord['order_code']) ?>
-                    </span>
-                    <span class="text-[9px] font-mono text-slate-500">
-                      <?= date('d/m/Y H:i', strtotime($ord['order_date'])) ?>
-                    </span>
+      <?php else: ?>
+        <!-- ================= MEMBER PURCHASE HISTORY ================= -->
+        <div class="glass-panel-elevated p-6 sm:p-7 rounded-3xl border border-slate-700/80">
+          <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-800">
+            <h3 class="font-scifi font-bold text-base text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-receipt"></i> ประวัติการสั่งซื้อการ์ดจอ
+            </h3>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold">
+              <?= count($orders) ?> รายการ
+            </span>
+          </div>
+
+          <div class="space-y-3.5 max-h-[580px] overflow-y-auto pr-1">
+            <?php if (!empty($orders)): ?>
+              <?php foreach ($orders as $ord): ?>
+                <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 transition-colors flex items-center gap-3.5">
+                  <div class="w-14 h-14 rounded-xl bg-slate-950 p-1.5 border border-slate-800 shrink-0 flex items-center justify-center">
+                    <img src="<?= e($ord['image_url']) ?>" alt="GPU" onerror="handleImgError(this)" class="max-w-full max-h-full object-contain">
                   </div>
-                  <h4 class="font-bold text-white text-xs truncate mt-1" title="<?= e($ord['model_name']) ?>">
-                    <?= e($ord['model_name']) ?>
-                  </h4>
-                  <div class="flex items-center justify-between mt-1">
-                    <span class="font-scifi font-bold text-emerald-400 text-xs">
-                      <?= formatPrice($ord['total_price']) ?>
-                    </span>
-                    <span class="text-[9px] font-mono text-emerald-400 font-semibold uppercase flex items-center gap-1">
-                      <i class="fa-solid fa-circle-check text-[8px]"></i> สำเร็จ
-                    </span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-cyan-950 border border-cyan-500/30 text-cyan-400 font-bold">
+                        <?= e($ord['order_code']) ?>
+                      </span>
+                      <span class="text-[9px] font-mono text-slate-500">
+                        <?= date('d/m/Y H:i', strtotime($ord['order_date'])) ?>
+                      </span>
+                    </div>
+                    <h4 class="font-bold text-white text-xs truncate mt-1" title="<?= e($ord['model_name']) ?>">
+                      <?= e($ord['model_name']) ?>
+                    </h4>
+                    <div class="flex items-center justify-between mt-1">
+                      <span class="font-scifi font-bold text-emerald-400 text-xs">
+                        <?= formatPrice($ord['total_price']) ?>
+                      </span>
+                      <span class="text-[9px] font-mono text-emerald-400 font-semibold uppercase flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check text-[8px]"></i> สำเร็จ
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <?php if (isAdmin()): ?>
-              <div class="text-center py-12 text-slate-500 font-mono text-xs">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center mb-3 text-amber-400 border border-amber-500/30">
-                  <i class="fa-solid fa-shield-halved text-2xl"></i>
-                </div>
-                <p class="text-slate-300 font-semibold mb-1">โหมดผู้ดูแลระบบ (Admin Mode)</p>
-                <p class="text-slate-500 text-[11px] mb-4">บัญชีนี้มีสิทธิ์เพิ่มและแก้ไขข้อมูลสินค้าในระบบ (ไม่ต้องสั่งซื้อสินค้า)</p>
-                <a href="manage.php" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2">
-                  <i class="fa-solid fa-boxes-stacked"></i> จัดการคลังการ์ดจอ ➔
-                </a>
-              </div>
+              <?php endforeach; ?>
             <?php else: ?>
               <div class="text-center py-12 text-slate-500 font-mono text-xs">
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center mb-3 text-slate-600 border border-slate-800">
@@ -461,10 +700,11 @@ require_once __DIR__ . '/includes/navbar.php';
                 </a>
               </div>
             <?php endif; ?>
-          <?php endif; ?>
-        </div>
+          </div>
 
-      </div>
+        </div>
+      <?php endif; ?>
+
     </div>
 
   </div>
@@ -579,6 +819,36 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// Admin Log Tab Switcher (Restock vs Catalog Add/Delete)
+function switchAdminLogTab(tabName) {
+  const tabRestock = document.getElementById('tabRestockContent');
+  const tabCatalog = document.getElementById('tabCatalogContent');
+  const btnRestock = document.getElementById('btnTabRestock');
+  const btnCatalog = document.getElementById('btnTabCatalog');
+
+  if (!tabRestock || !tabCatalog || !btnRestock || !btnCatalog) return;
+
+  if (tabName === 'restock') {
+    tabRestock.classList.remove('hidden');
+    tabCatalog.classList.add('hidden');
+    btnRestock.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-scifi font-bold transition-all bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer';
+    btnCatalog.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-scifi font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center justify-center gap-1.5 cursor-pointer';
+  } else {
+    tabRestock.classList.add('hidden');
+    tabCatalog.classList.remove('hidden');
+    btnCatalog.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-scifi font-bold transition-all bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer';
+    btnRestock.className = 'flex-1 py-2 px-3 rounded-xl text-xs font-scifi font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center justify-center gap-1.5 cursor-pointer';
+  }
+}
+
+// Toggle Quick Restock Form
+function toggleQuickRestockForm() {
+  const box = document.getElementById('quickRestockFormBox');
+  if (box) {
+    box.classList.toggle('hidden');
+  }
+}
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

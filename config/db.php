@@ -144,3 +144,133 @@ function addToCart($gpuId, $qty = 1) {
         $_SESSION['cart'][$gpuId] = $qty;
     }
 }
+
+/**
+ * Ensure inventory_logs table exists and seed realistic logs if empty
+ */
+function ensureInventoryLogsTable($pdo) {
+    if (!$pdo) return;
+    static $initialized = false;
+    if ($initialized) return;
+
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS `inventory_logs` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `log_type` ENUM('restock', 'add', 'edit', 'delete') NOT NULL,
+            `gpu_id` INT UNSIGNED DEFAULT NULL,
+            `model_name` VARCHAR(180) NOT NULL,
+            `user_id` INT UNSIGNED DEFAULT NULL,
+            `username` VARCHAR(50) DEFAULT 'admin',
+            `old_stock` INT DEFAULT NULL,
+            `new_stock` INT DEFAULT NULL,
+            `stock_change` INT DEFAULT NULL,
+            `action_details` TEXT DEFAULT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX `idx_log_type` (`log_type`),
+            INDEX `idx_created_at` (`created_at`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+        // Check if logs are empty, seed initial data
+        $check = $pdo->query("SELECT COUNT(*) FROM inventory_logs")->fetchColumn();
+        if ($check == 0) {
+            $pdo->exec("INSERT INTO `inventory_logs` 
+                (`log_type`, `gpu_id`, `model_name`, `user_id`, `username`, `old_stock`, `new_stock`, `stock_change`, `action_details`, `created_at`) 
+                VALUES
+                ('restock', 3, 'GIGABYTE GeForce RTX 4070 SUPER WINDFORCE OC 12GB', 1, 'admin', 5, 15, 10, 'เติมสต็อกสินค้าเพิ่ม +10 ชิ้น สำหรับโปรโมชั่นประจำสัปดาห์', '2026-10-16 21:30:00'),
+                ('restock', 1, 'ASUS ROG Strix GeForce RTX 4090 OC 24GB', 1, 'admin', 1, 4, 3, 'เติมสต็อกการ์ดจอเรือธง +3 ชิ้น จากผู้นำเข้า ASUS Thailand', '2026-10-15 14:15:00'),
+                ('restock', 2, 'MSI GeForce RTX 4080 SUPER 16GB Gaming X Trio', 1, 'admin', 4, 8, 4, 'เติมสต็อกสินค้า +4 ชิ้น ตอบสนองความต้องการประกอบคอม 4K', '2026-10-14 18:00:00'),
+                ('restock', 11, 'Intel Arc B580 Battlemage Limited 12GB GDDR6', 1, 'admin', 5, 10, 5, 'เติมสต็อกชิปเซ็ต Battlemage รุ่นใหม่ล่าสุด +5 ชิ้น', '2026-10-13 11:20:00'),
+                ('restock', 6, 'PowerColor Hellhound AMD Radeon RX 7800 XT 16GB', 1, 'admin', 6, 12, 6, 'เติมสต็อกล็อตใหม่ +6 ชิ้น สำหรับเกมเมอร์สาย 2K', '2026-10-11 09:45:00'),
+                ('add', 11, 'Intel Arc B580 Battlemage Limited 12GB GDDR6', 1, 'admin', 0, 10, 10, 'เพิ่มรายการการ์ดจอใหม่เข้าสู่ระบบ (Intel Battlemage Xe2, ราคา ฿10,900.00)', '2026-10-16 20:00:00'),
+                ('edit', 1, 'ASUS ROG Strix GeForce RTX 4090 OC 24GB', 1, 'admin', 4, 4, 0, 'ปรับปรุงข้อมูลราคาจำหน่ายพิเศษและอัปเดตสเปก TDP 450W', '2026-10-15 16:30:00'),
+                ('add', 3, 'GIGABYTE GeForce RTX 4070 SUPER WINDFORCE OC 12GB', 1, 'admin', 0, 15, 15, 'เพิ่มรายการการ์ดจอใหม่เข้าสู่ระบบ (NVIDIA Ada Lovelace, ราคา ฿24,500.00)', '2026-10-14 17:10:00'),
+                ('edit', 12, 'MSI Radeon RX 7600 XT GAMING X 16GB', 1, 'admin', 0, 0, 0, 'ปรับสถานะเป็นสินค้าหมดชั่วคราว (Out of Stock)', '2026-10-12 10:00:00'),
+                ('delete', 99, 'NVIDIA GeForce RTX 3060 Ti Twin 8GB GDDR6', 1, 'admin', 0, 0, 0, 'ลบสินค้าออกจากระบบเนื่องจากตกรุ่นและยกเลิกสายการผลิต', '2026-10-10 08:30:00')
+            ");
+        }
+        $initialized = true;
+    } catch (PDOException $e) {
+        error_log("Inventory log init error: " . $e->getMessage());
+    }
+}
+
+/**
+ * Log Inventory Action Helper
+ */
+function logInventoryAction($type, $gpuId, $modelName, $oldStock = null, $newStock = null, $stockChange = null, $details = null) {
+    $pdo = getDBConnection();
+    if (!$pdo) return false;
+    ensureInventoryLogsTable($pdo);
+
+    try {
+        $userId = $_SESSION['user_id'] ?? 1;
+        $username = $_SESSION['username'] ?? 'admin';
+        $now = date('Y-m-d H:i:s');
+
+        $stmt = $pdo->prepare("INSERT INTO inventory_logs 
+            (log_type, gpu_id, model_name, user_id, username, old_stock, new_stock, stock_change, action_details, created_at) 
+            VALUES (:type, :gid, :mname, :uid, :uname, :old_s, :new_s, :s_change, :details, :created_at)");
+        
+        $stmt->execute([
+            ':type'       => $type,
+            ':gid'        => $gpuId,
+            ':mname'      => $modelName,
+            ':uid'        => $userId,
+            ':uname'      => $username,
+            ':old_s'      => $oldStock,
+            ':new_s'      => $newStock,
+            ':s_change'   => $stockChange,
+            ':details'    => $details,
+            ':created_at' => $now
+        ]);
+        return true;
+    } catch (PDOException $e) {
+        error_log("Failed to insert inventory log: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Fetch Restock Logs
+ */
+function getRestockLogs($limit = 50) {
+    $pdo = getDBConnection();
+    if (!$pdo) return [];
+    ensureInventoryLogsTable($pdo);
+    try {
+        $stmt = $pdo->prepare("SELECT l.*, g.image_url 
+                               FROM inventory_logs l
+                               LEFT JOIN gpus g ON l.gpu_id = g.id
+                               WHERE l.log_type = 'restock'
+                               ORDER BY l.created_at DESC 
+                               LIMIT :lim");
+        $stmt->bindValue(':lim', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+
+/**
+ * Fetch Product Add/Edit/Delete Catalog Logs
+ */
+function getCatalogLogs($limit = 50) {
+    $pdo = getDBConnection();
+    if (!$pdo) return [];
+    ensureInventoryLogsTable($pdo);
+    try {
+        $stmt = $pdo->prepare("SELECT l.*, g.image_url 
+                               FROM inventory_logs l
+                               LEFT JOIN gpus g ON l.gpu_id = g.id
+                               WHERE l.log_type IN ('add', 'edit', 'delete')
+                               ORDER BY l.created_at DESC 
+                               LIMIT :lim");
+        $stmt->bindValue(':lim', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+

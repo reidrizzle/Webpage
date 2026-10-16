@@ -144,12 +144,28 @@ if ($pdo) {
       </p>
     </div>
 
-    <!-- Print Button -->
-    <div class="flex items-center gap-3">
+    <!-- Quick Buttons -->
+    <div class="flex flex-wrap items-center gap-3">
+      <a href="sales_report.php" class="px-4 py-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:text-white hover:bg-emerald-900/60 transition-colors text-xs font-scifi font-bold flex items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-chart-line"></i> รายงานยอดขาย & สินค้าขายดี
+      </a>
+
       <button onclick="window.print()" class="btn-cyber-primary px-5 py-2.5 rounded-xl text-xs font-bold tracking-wider flex items-center gap-2">
         <i class="fa-solid fa-print text-sm"></i> พิมพ์รายงาน (Print / PDF)
       </button>
     </div>
+  </div>
+
+  <!-- Dual Report Mode Tabs (รายงานยอดขาย vs รายงานสรุปคลัง) -->
+  <div class="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 mb-8 max-w-xl shadow-xl print:hidden">
+    <a href="sales_report.php" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-scifi font-medium text-center text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all flex items-center justify-center gap-2">
+      <i class="fa-solid fa-chart-line text-emerald-400"></i>
+      <span>รายงานยอดขาย & สินค้าขายดี</span>
+    </a>
+    <a href="reports.php" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-scifi font-bold text-center bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm flex items-center justify-center gap-2">
+      <i class="fa-solid fa-chart-pie text-cyan-400"></i>
+      <span>รายงานสรุปคลัง & มูลค่าสินค้า</span>
+    </a>
   </div>
 
   <!-- Summary KPI Highlights -->

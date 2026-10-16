@@ -64,9 +64,12 @@ if ($pdo) {
       </p>
     </div>
 
-    <div class="flex items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
+      <a href="sales_report.php" class="px-4 py-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:text-white hover:bg-emerald-900/60 transition-colors text-xs font-scifi font-bold flex items-center gap-1.5 shadow-sm">
+        <i class="fa-solid fa-chart-line text-emerald-400"></i> รายงานยอดขาย
+      </a>
       <a href="reports.php" class="px-4 py-2.5 rounded-xl bg-purple-950/60 border border-purple-500/40 text-purple-300 hover:text-white hover:bg-purple-900/60 transition-colors text-xs font-scifi flex items-center gap-1.5">
-        <i class="fa-solid fa-chart-pie"></i> รายงานสถิติ
+        <i class="fa-solid fa-chart-pie"></i> สรุปคลัง
       </a>
       <a href="add_gpu.php" class="btn-cyber-primary px-5 py-2.5 rounded-xl text-xs font-bold tracking-wider flex items-center gap-2">
         <i class="fa-solid fa-plus-circle"></i> เพิ่มการ์ดจอใหม่
