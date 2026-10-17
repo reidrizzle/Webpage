@@ -189,24 +189,29 @@ if ($pdo) {
       ?>
       <div class="glass-panel gpu-card <?= $brandClass ?> rounded-2xl flex flex-col justify-between">
         
-        <!-- Top Image Container with Manufacturer Badge -->
+        <!-- Top Image Container with Manufacturer & Warranty Badge -->
         <div class="relative">
           <div class="gpu-img-container rounded-t-2xl">
             <img src="<?= e($gpu['image_url']) ?>" alt="<?= e($gpu['model_name']) ?>" onerror="handleImgError(this)" loading="lazy">
           </div>
 
-          <!-- Chipset Badge -->
-          <div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-scifi font-bold <?= $badgeClass ?>">
-            <span class="w-1.5 h-1.5 rounded-full" style="background-color: <?= e($gpu['badge_color']) ?>;"></span>
+          <!-- Chipset Badge (HUD Overlay) -->
+          <div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-scifi font-bold badge-chipset-overlay" style="color: <?= e($gpu['badge_color']) ?>; border: 1px solid <?= e($gpu['badge_color']) ?>60;">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: <?= e($gpu['badge_color']) ?>;"></span>
             <?= e($gpu['manufacturer']) ?>
           </div>
 
-          <!-- Featured Star -->
-          <?php if (!empty($gpu['is_featured'])): ?>
-            <div class="absolute top-3 right-3 px-2 py-0.5 rounded text-[10px] font-scifi font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-              <i class="fa-solid fa-star mr-1"></i> TOP PICK
+          <!-- Warranty & Top Pick Badges -->
+          <div class="absolute top-3 right-3 flex items-center gap-1.5">
+            <div class="badge-warranty px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold flex items-center gap-1">
+              <i class="fa-solid fa-shield-halved text-amber-400"></i> ประกัน 3 ปี
             </div>
-          <?php endif; ?>
+            <?php if (!empty($gpu['is_featured'])): ?>
+              <div class="px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 shadow-sm hidden sm:flex items-center gap-1">
+                <i class="fa-solid fa-fire text-cyan-400"></i> HOT
+              </div>
+            <?php endif; ?>
+          </div>
         </div>
 
         <!-- Body Content -->
@@ -262,7 +267,7 @@ if ($pdo) {
             <div class="flex items-center justify-between gap-2 mt-1">
               <div class="min-w-0">
                 <span class="text-[10px] text-slate-500 uppercase font-mono block leading-tight">ราคาพิเศษ</span>
-                <span class="font-scifi font-black text-base sm:text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-300 truncate block">
+                <span class="font-scifi font-black text-base sm:text-lg text-rose-400 truncate block">
                   <?= formatPrice($gpu['price']) ?>
                 </span>
               </div>

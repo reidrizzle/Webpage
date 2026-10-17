@@ -148,12 +148,17 @@ require_once __DIR__ . '/includes/navbar.php';
           <div>
             <div class="relative gpu-img-container rounded-xl mb-4">
               <img src="<?= e($gpu['image_url']) ?>" alt="GPU" onerror="handleImgError(this)" class="w-full h-full object-contain">
-              <span class="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-scifi font-bold" style="background: <?= e($gpu['badge_color']) ?>20; color: <?= e($gpu['badge_color']) ?>; border: 1px solid <?= e($gpu['badge_color']) ?>40;">
+              <span class="absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-scifi font-bold badge-chipset-overlay" style="color: <?= e($gpu['badge_color']) ?>; border: 1px solid <?= e($gpu['badge_color']) ?>60;">
                 <?= e($gpu['manufacturer']) ?>
               </span>
-              <span class="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-rose-500/30 text-rose-300 border border-rose-500/40">
-                PROMO DEAL
-              </span>
+              <div class="absolute top-2 right-2 flex items-center gap-1">
+                <span class="badge-warranty px-2 py-0.5 rounded text-[9px] font-scifi font-bold">
+                  <i class="fa-solid fa-shield-halved text-amber-400"></i> 3Y
+                </span>
+                <span class="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-rose-500/90 text-white shadow-sm">
+                  PROMO
+                </span>
+              </div>
             </div>
 
             <div class="text-[11px] font-mono text-slate-400 uppercase truncate h-5">

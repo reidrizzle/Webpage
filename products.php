@@ -153,6 +153,8 @@ require_once __DIR__ . '/includes/navbar.php';
           <label class="block text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1">ขนาดแรม VRAM</label>
           <select name="vram" onchange="this.form.submit()" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-cyan-400">
             <option value="">ทุกขนาด VRAM</option>
+            <option value="4" <?= $filterVram == 4 ? 'selected' : '' ?>>4 GB</option>
+            <option value="6" <?= $filterVram == 6 ? 'selected' : '' ?>>6 GB</option>
             <option value="8" <?= $filterVram == 8 ? 'selected' : '' ?>>8 GB</option>
             <option value="12" <?= $filterVram == 12 ? 'selected' : '' ?>>12 GB</option>
             <option value="16" <?= $filterVram == 16 ? 'selected' : '' ?>>16 GB</option>
@@ -178,22 +180,34 @@ require_once __DIR__ . '/includes/navbar.php';
   <!-- Products Grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     <?php if (!empty($gpus)): ?>
-      <?php foreach ($gpus as $gpu): ?>
-        <div class="glass-panel gpu-card rounded-2xl flex flex-col justify-between">
+      <?php foreach ($gpus as $gpu): 
+        $brandClass = 'brand-' . strtolower($gpu['manufacturer']);
+      ?>
+        <div class="glass-panel gpu-card <?= $brandClass ?> rounded-2xl flex flex-col justify-between">
           
           <!-- Image -->
           <div class="relative">
             <div class="gpu-img-container rounded-t-2xl">
               <img src="<?= e($gpu['image_url']) ?>" alt="<?= e($gpu['model_name']) ?>" onerror="handleImgError(this)" loading="lazy">
             </div>
-            <div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-scifi font-bold" style="background: <?= e($gpu['badge_color']) ?>20; color: <?= e($gpu['badge_color']) ?>; border: 1px solid <?= e($gpu['badge_color']) ?>40;">
+            
+            <!-- Chipset Badge -->
+            <div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-scifi font-bold badge-chipset-overlay" style="color: <?= e($gpu['badge_color']) ?>; border: 1px solid <?= e($gpu['badge_color']) ?>60;">
+              <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: <?= e($gpu['badge_color']) ?>;"></span>
               <?= e($gpu['manufacturer']) ?>
             </div>
-            <?php if (!empty($gpu['is_featured'])): ?>
-              <div class="absolute top-3 right-3 px-2 py-0.5 rounded text-[10px] font-scifi font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                <i class="fa-solid fa-star mr-1"></i> TOP PICK
+
+            <!-- Warranty & Top Pick Badges -->
+            <div class="absolute top-3 right-3 flex items-center gap-1.5">
+              <div class="badge-warranty px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold flex items-center gap-1">
+                <i class="fa-solid fa-shield-halved text-amber-400"></i> ประกัน 3 ปี
               </div>
-            <?php endif; ?>
+              <?php if (!empty($gpu['is_featured'])): ?>
+                <div class="px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 shadow-sm hidden sm:flex items-center gap-1">
+                  <i class="fa-solid fa-fire text-cyan-400"></i> TOP
+                </div>
+              <?php endif; ?>
+            </div>
           </div>
 
           <!-- Body -->
@@ -249,7 +263,7 @@ require_once __DIR__ . '/includes/navbar.php';
               <div class="flex items-center justify-between gap-2 mt-1">
                 <div class="min-w-0">
                   <span class="text-[10px] text-slate-500 uppercase font-mono block leading-tight">ราคาพิเศษ</span>
-                  <span class="font-scifi font-black text-base sm:text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-300 truncate block">
+                  <span class="font-scifi font-black text-base sm:text-lg text-rose-400 truncate block">
                     <?= formatPrice($gpu['price']) ?>
                   </span>
                 </div>

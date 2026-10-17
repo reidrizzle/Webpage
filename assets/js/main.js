@@ -6,7 +6,7 @@
 // Image Fallback Handler
 function handleImgError(img) {
   img.onerror = null;
-  img.src = 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80';
+  img.src = 'https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products103815_800.jpg';
 }
 
 // SweetAlert2 Cyber Alert Preset

@@ -113,8 +113,8 @@
       <i class="fa-solid fa-xmark text-lg"></i>
     </button>
     <div class="grid grid-cols-1 md:grid-cols-2">
-      <div class="bg-slate-950 p-6 flex items-center justify-center border-b md:border-b-0 md:border-r border-slate-800">
-        <img id="qvImg" src="" alt="GPU Preview" class="max-h-56 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+      <div class="bg-gradient-to-br from-white to-slate-100 p-6 flex items-center justify-center border-b md:border-b-0 md:border-r border-slate-800 relative">
+        <img id="qvImg" src="" alt="GPU Preview" class="max-h-56 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)]">
       </div>
       <div class="p-6 flex flex-col justify-between">
         <div>
@@ -145,7 +145,7 @@
         <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
           <div>
             <span class="text-[10px] text-slate-400 uppercase font-mono block">ราคาจำหน่าย</span>
-            <span id="qvPrice" class="text-xl font-black font-scifi text-cyan-400"></span>
+            <span id="qvPrice" class="text-xl font-black font-scifi text-rose-400"></span>
           </div>
           <div class="flex items-center gap-2">
             <button type="button" id="qvBuyBtn" class="btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold font-scifi">

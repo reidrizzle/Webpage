@@ -223,9 +223,16 @@ if ($pdo) {
           </div>
 
           <!-- Chipset Badge -->
-          <div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-scifi font-bold <?= $badgeClass ?>">
-            <span class="w-1.5 h-1.5 rounded-full" style="background-color: <?= e($gpu['badge_color']) ?>;"></span>
+          <div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-scifi font-bold badge-chipset-overlay" style="color: <?= e($gpu['badge_color']) ?>; border: 1px solid <?= e($gpu['badge_color']) ?>60;">
+            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: <?= e($gpu['badge_color']) ?>;"></span>
             <?= e($gpu['manufacturer']) ?>
+          </div>
+
+          <!-- Warranty Badge -->
+          <div class="absolute top-3 right-3 flex items-center gap-1.5">
+            <div class="badge-warranty px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold flex items-center gap-1">
+              <i class="fa-solid fa-shield-halved text-amber-400"></i> ประกัน 3 ปี
+            </div>
           </div>
         </div>
 
@@ -271,7 +278,7 @@ if ($pdo) {
 
             <div class="flex items-center justify-between gap-2 mt-1">
               <div class="min-w-0">
-                <span class="font-scifi font-black text-base sm:text-lg text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-300 truncate block">
+                <span class="font-scifi font-black text-base sm:text-lg text-rose-400 truncate block">
                   <?= formatPrice($gpu['price']) ?>
                 </span>
               </div>
