@@ -164,16 +164,45 @@ function setSampleImage(url, inputId = 'image_url', previewId = 'imagePreview') 
   }
 }
 
-// Quick View Modal
+// Global GPU Catalog Registry for safe Quick View lookup
+window.gpuCatalog = window.gpuCatalog || {};
+
+function registerGpuCatalog(items) {
+  if (Array.isArray(items)) {
+    items.forEach(function(item) {
+      if (item && item.id) {
+        window.gpuCatalog[item.id] = item;
+      }
+    });
+  } else if (items && typeof items === 'object') {
+    Object.assign(window.gpuCatalog, items);
+  }
+}
+
+function openQuickViewById(id) {
+  const gpu = (window.gpuCatalog && window.gpuCatalog[id]) ? window.gpuCatalog[id] : null;
+  if (gpu) {
+    openQuickView(gpu);
+  } else {
+    console.warn('GPU not found in window.gpuCatalog for ID:', id);
+  }
+}
+
+// Quick View Modal (supports GPU object or GPU ID)
 function openQuickView(gpuData) {
+  if (typeof gpuData === 'number' || typeof gpuData === 'string') {
+    gpuData = (window.gpuCatalog && window.gpuCatalog[gpuData]) ? window.gpuCatalog[gpuData] : null;
+  }
+  if (!gpuData) return;
+
   const modal = document.getElementById('quickViewModal');
   if (!modal) return;
 
   document.getElementById('qvModelName').innerText = gpuData.model_name || '';
-  document.getElementById('qvBrand').innerText = (gpuData.brand_name || '') + ' • ' + (gpuData.chipset_model || '');
+  document.getElementById('qvBrand').innerText = (gpuData.brand_name || '') + (gpuData.chipset_model ? ' • ' + gpuData.chipset_model : '');
   document.getElementById('qvPrice').innerText = '฿' + Number(gpuData.price).toLocaleString();
   document.getElementById('qvStock').innerText = (gpuData.stock > 0 ? gpuData.stock + ' ชิ้น' : 'สินค้าหมด');
-  document.getElementById('qvVram').innerText = gpuData.vram_gb + ' GB ' + (gpuData.memory_type || '');
+  document.getElementById('qvVram').innerText = (gpuData.vram_gb ? gpuData.vram_gb + ' GB ' : '') + (gpuData.memory_type || '');
   document.getElementById('qvClocks').innerText = (gpuData.core_clock || '-') + ' / ' + (gpuData.boost_clock || '-') + ' MHz';
   document.getElementById('qvBus').innerText = (gpuData.bus_width || '-') + '-bit';
   document.getElementById('qvTdp').innerText = (gpuData.tdp_watts || '-') + 'W';
@@ -181,7 +210,7 @@ function openQuickView(gpuData) {
   
   const qvImg = document.getElementById('qvImg');
   if (qvImg) {
-    qvImg.src = gpuData.image_url || 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80';
+    qvImg.src = gpuData.image_url || 'https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products103815_800.jpg';
     qvImg.onerror = () => handleImgError(qvImg);
   }
 
@@ -215,6 +244,13 @@ function closeQuickView() {
     modal.classList.remove('flex');
   }
 }
+
+// ESC Key closes QuickView
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' || e.keyCode === 27) {
+    closeQuickView();
+  }
+});
 
 // Mobile Menu Toggle
 function toggleMobileMenu() {

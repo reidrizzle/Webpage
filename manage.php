@@ -223,7 +223,7 @@ if ($pdo) {
               <td class="py-3 px-4 text-center whitespace-nowrap">
                 <div class="flex items-center justify-center gap-1.5">
                   <!-- Quick View -->
-                  <button type="button" onclick='openQuickView(<?= json_encode($gpu, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' 
+                  <button type="button" onclick="openQuickViewById(<?= (int)$gpu['id'] ?>)" 
                           class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition-colors" title="ดูตัวอย่าง">
                     <i class="fa-solid fa-eye text-xs"></i>
                   </button>
@@ -268,6 +268,11 @@ function filterTableRows() {
     row.style.display = text.includes(query) ? '' : 'none';
   });
 }
+</script>
+
+<script>
+  window.gpuCatalog = window.gpuCatalog || {};
+  (<?= json_encode($gpus, JSON_UNESCAPED_UNICODE) ?>).forEach(function(g) { window.gpuCatalog[g.id] = g; });
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

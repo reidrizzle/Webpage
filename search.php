@@ -284,7 +284,7 @@ if ($pdo) {
               </div>
               
               <div class="flex items-center gap-1.5 shrink-0">
-                <button onclick='openQuickView(<?= json_encode($gpu, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' 
+                <button type="button" onclick="openQuickViewById(<?= (int)$gpu['id'] ?>)" 
                         class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ดูสเปคด่วน">
                   <i class="fa-solid fa-eye"></i>
                 </button>
@@ -329,5 +329,10 @@ if ($pdo) {
   </div>
 
 </div>
+
+<script>
+  window.gpuCatalog = window.gpuCatalog || {};
+  (<?= json_encode($gpus, JSON_UNESCAPED_UNICODE) ?>).forEach(function(g) { window.gpuCatalog[g.id] = g; });
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

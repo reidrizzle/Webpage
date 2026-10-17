@@ -106,8 +106,7 @@
   </div>
 </footer>
 
-<!-- Global Quick View Modal -->
-<div id="quickViewModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all duration-300">
+<div id="quickViewModal" onclick="if(event.target === this) closeQuickView()" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all duration-300">
   <div class="relative w-full max-w-2xl glass-panel-elevated rounded-2xl overflow-hidden border border-cyan-500/30 shadow-2xl shadow-cyan-500/20">
     <button onclick="closeQuickView()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-slate-900/80 border border-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
       <i class="fa-solid fa-xmark text-lg"></i>

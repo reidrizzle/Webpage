@@ -269,6 +269,11 @@ require_once __DIR__ . '/includes/navbar.php';
                 </div>
                 
                 <div class="flex items-center gap-1.5 shrink-0">
+                  <button type="button" onclick="openQuickViewById(<?= (int)$gpu['id'] ?>)" 
+                          class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ดูสเปคด่วน">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+
                   <button onclick='addToCartAjax(<?= $gpu['id'] ?>)' 
                           class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="เพิ่มลงตะกร้า">
                     <i class="fa-solid fa-cart-plus text-cyan-400"></i>
@@ -341,6 +346,11 @@ function addToCartAjax(id) {
       }
     });
 }
+</script>
+
+<script>
+  window.gpuCatalog = window.gpuCatalog || {};
+  (<?= json_encode($gpus, JSON_UNESCAPED_UNICODE) ?>).forEach(function(g) { window.gpuCatalog[g.id] = g; });
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

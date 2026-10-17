@@ -107,8 +107,9 @@ if ($pdo) {
 
           <div class="relative py-4 flex items-center justify-center">
             <div class="absolute inset-0 bg-cyan-500/10 rounded-full blur-2xl"></div>
-            <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=700&q=80" 
-                 alt="GeForce RTX 4090" 
+            <img src="assets/images/gpus/asus_rog_rtx_4090.jpg" 
+                 onerror="this.src='https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products78126_800.jpg'"
+                 alt="ASUS ROG Strix RTX 4090 OC Packshot" 
                  class="relative z-10 max-h-56 object-contain drop-shadow-[0_20px_35px_rgba(0,240,255,0.25)] group-hover:scale-105 group-hover:-rotate-1 transition-transform duration-500">
           </div>
 
@@ -273,7 +274,7 @@ if ($pdo) {
               </div>
               
               <div class="flex items-center gap-1.5 shrink-0">
-                <button onclick='openQuickView(<?= json_encode($gpu, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' 
+                <button type="button" onclick="openQuickViewById(<?= (int)$gpu['id'] ?>)" 
                         class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ดูสเปคด่วน">
                   <i class="fa-solid fa-eye"></i>
                 </button>
@@ -355,6 +356,11 @@ function addToCartAjax(id) {
       }
     });
 }
+</script>
+
+<script>
+  window.gpuCatalog = window.gpuCatalog || {};
+  (<?= json_encode($gpus, JSON_UNESCAPED_UNICODE) ?>).forEach(function(g) { window.gpuCatalog[g.id] = g; });
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
