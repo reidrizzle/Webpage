@@ -185,131 +185,132 @@ if ($pdo) {
     <?php if (!empty($gpus)): ?>
       <?php foreach ($gpus as $gpu): 
         $brandClass = 'brand-' . strtolower($gpu['manufacturer']);
-        $badgeClass = 'badge-' . strtolower($gpu['manufacturer']);
       ?>
-      <div class="glass-panel gpu-card <?= $brandClass ?> rounded-2xl flex flex-col justify-between">
-        
-        <!-- Top Image Container with Manufacturer & Warranty Badge -->
-        <div class="relative">
-          <div class="gpu-img-container rounded-t-2xl">
-            <img src="<?= e($gpu['image_url']) ?>" alt="<?= e($gpu['model_name']) ?>" onerror="handleImgError(this)" loading="lazy">
-          </div>
-
-          <!-- Chipset Badge (HUD Overlay) -->
-          <div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-scifi font-bold badge-chipset-overlay" style="color: <?= e($gpu['badge_color']) ?>; border: 1px solid <?= e($gpu['badge_color']) ?>60;">
-            <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: <?= e($gpu['badge_color']) ?>;"></span>
-            <?= e($gpu['manufacturer']) ?>
-          </div>
-
-          <!-- Warranty & Top Pick Badges -->
-          <div class="absolute top-3 right-3 flex items-center gap-1.5">
-            <div class="badge-warranty px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold flex items-center gap-1">
-              <i class="fa-solid fa-shield-halved text-amber-400"></i> ประกัน 3 ปี
+        <div class="glass-panel gpu-card <?= $brandClass ?> rounded-2xl flex flex-col justify-between">
+          
+          <!-- Image -->
+          <div class="relative">
+            <div class="gpu-img-container rounded-t-2xl">
+              <img src="<?= e($gpu['image_url']) ?>" alt="<?= e($gpu['model_name']) ?>" onerror="handleImgError(this)" loading="lazy">
             </div>
-            <?php if (!empty($gpu['is_featured'])): ?>
-              <div class="px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 shadow-sm hidden sm:flex items-center gap-1">
-                <i class="fa-solid fa-fire text-cyan-400"></i> HOT
-              </div>
-            <?php endif; ?>
-          </div>
-        </div>
-
-        <!-- Body Content -->
-        <div class="p-5 flex-1 flex flex-col justify-between">
-          <div>
-            <div class="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1 truncate h-5 flex items-center" title="<?= e($gpu['brand_name']) ?> • <?= e($gpu['chipset_model']) ?>">
-              <?= e($gpu['brand_name']) ?> • <?= e($gpu['chipset_model']) ?>
+            
+            <!-- Chipset Badge -->
+            <div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-scifi font-bold badge-chipset-overlay" style="color: <?= e($gpu['badge_color']) ?>; border: 1px solid <?= e($gpu['badge_color']) ?>60;">
+              <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: <?= e($gpu['badge_color']) ?>;"></span>
+              <?= e($gpu['manufacturer']) ?>
             </div>
-            <h3 class="font-bold text-white text-sm line-clamp-2 h-10 leading-snug hover:text-cyan-400 transition-colors" title="<?= e($gpu['model_name']) ?>">
-              <?= e($gpu['model_name']) ?>
-            </h3>
 
-            <!-- Quick Specs Chips Grid -->
-            <div class="grid grid-cols-2 gap-1.5 my-3">
-              <div class="spec-chip h-7 flex items-center gap-1.5">
-                <i class="fa-solid fa-memory text-cyan-400 text-[10px]"></i>
-                <span class="truncate"><?= e($gpu['vram_gb']) ?>GB <?= e($gpu['memory_type']) ?></span>
+            <!-- Warranty & Top Pick Badges -->
+            <div class="absolute top-3 right-3 flex items-center gap-1.5">
+              <div class="badge-warranty px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold flex items-center gap-1">
+                <i class="fa-solid fa-shield-halved text-amber-400"></i> ประกัน 3 ปี
               </div>
-              <div class="spec-chip h-7 flex items-center gap-1.5">
-                <i class="fa-solid fa-arrows-split-up-and-left text-indigo-400 text-[10px]"></i>
-                <span class="truncate"><?= e($gpu['bus_width']) ?>-bit</span>
-              </div>
-              <div class="spec-chip h-7 flex items-center gap-1.5">
-                <i class="fa-solid fa-gauge-high text-emerald-400 text-[10px]"></i>
-                <span class="truncate"><?= e($gpu['boost_clock']) ?> MHz</span>
-              </div>
-              <div class="spec-chip h-7 flex items-center gap-1.5">
-                <i class="fa-solid fa-bolt text-amber-400 text-[10px]"></i>
-                <span class="truncate"><?= e($gpu['tdp_watts']) ?>W TDP</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Stock & Price Footer (Pinned to bottom via mt-auto) -->
-          <div class="pt-3 border-t border-slate-800/80 mt-auto">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs text-slate-400">สถานะสต็อก:</span>
-              <?php if ($gpu['stock'] > 5): ?>
-                <span class="text-[11px] font-mono font-semibold text-emerald-400 flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> พร้อมส่ง (<?= $gpu['stock'] ?> ชิ้น)
-                </span>
-              <?php elseif ($gpu['stock'] > 0): ?>
-                <span class="text-[11px] font-mono font-semibold text-amber-400 flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> ใกล้หมด (เหลือ <?= $gpu['stock'] ?>)
-                </span>
-              <?php else: ?>
-                <span class="text-[11px] font-mono font-semibold text-rose-400 flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> สินค้าหมด
-                </span>
+              <?php if (!empty($gpu['is_featured'])): ?>
+                <div class="px-2 py-0.5 rounded-md text-[10px] font-scifi font-bold bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 shadow-sm hidden sm:flex items-center gap-1">
+                  <i class="fa-solid fa-fire text-cyan-400"></i> TOP
+                </div>
               <?php endif; ?>
             </div>
+          </div>
 
-            <div class="flex items-center justify-between gap-2 mt-1">
-              <div class="min-w-0">
-                <span class="text-[10px] text-slate-500 uppercase font-mono block leading-tight">ราคาพิเศษ</span>
-                <span class="font-scifi font-black text-base sm:text-lg text-rose-400 truncate block">
-                  <?= formatPrice($gpu['price']) ?>
-                </span>
+          <!-- Body -->
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-1 truncate h-5 flex items-center" title="<?= e($gpu['brand_name']) ?> • <?= e($gpu['chipset_model']) ?>">
+                <?= e($gpu['brand_name']) ?> • <?= e($gpu['chipset_model']) ?>
               </div>
-              
-                <button type="button" 
-                        data-gpu-id="<?= (int)$gpu['id'] ?>"
-                        data-gpu="<?= htmlspecialchars(json_encode($gpu, JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') ?>"
-                        onclick="openQuickView(this)" 
-                        class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ดูสเปคด่วน">
-                  <i class="fa-solid fa-eye pointer-events-none"></i>
-                </button>
+              <h3 class="font-bold text-white text-sm line-clamp-2 h-10 leading-snug hover:text-cyan-400 transition-colors" title="<?= e($gpu['model_name']) ?>">
+                <?= e($gpu['model_name']) ?>
+              </h3>
 
-                <?php if (isAdmin()): ?>
-                  <!-- Admin Edit Button (No buying for Admin) -->
-                  <a href="edit_gpu.php?id=<?= $gpu['id'] ?>" 
-                     class="px-3 py-2 rounded-xl text-xs font-scifi font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0" title="แก้ไขข้อมูลการ์ดจอนี้">
-                    <i class="fa-solid fa-pen-to-square text-xs"></i> <span>แก้ไข</span>
-                  </a>
-                <?php else: ?>
-                  <!-- Member Buy & Cart Buttons -->
-                  <?php if ($gpu['stock'] > 0): ?>
-                    <button onclick="addToCartAjax(<?= $gpu['id'] ?>)" 
-                            class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ใส่ตะกร้าสินค้า">
-                      <i class="fa-solid fa-cart-plus"></i>
-                    </button>
-                    <button onclick="confirmBuy(<?= $gpu['id'] ?>, '<?= addslashes(e($gpu['model_name'])) ?>', <?= $gpu['price'] ?>)" 
-                            class="btn-cyber-primary px-3 py-2 rounded-xl text-xs font-scifi font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 shadow-md shadow-cyan-500/20">
-                      <i class="fa-solid fa-cart-shopping text-xs"></i> <span>สั่งซื้อ</span>
-                    </button>
-                  <?php else: ?>
-                    <button disabled class="px-2.5 py-2 rounded-xl bg-slate-800 text-slate-500 text-xs font-mono cursor-not-allowed whitespace-nowrap shrink-0">
-                      สินค้าหมด
-                    </button>
-                  <?php endif; ?>
-                <?php endif; ?>
+              <!-- Specs -->
+              <div class="grid grid-cols-2 gap-1.5 my-3">
+                <div class="spec-chip h-7 flex items-center gap-1.5">
+                  <i class="fa-solid fa-memory text-cyan-400 text-[10px]"></i>
+                  <span class="truncate"><?= e($gpu['vram_gb']) ?>GB <?= e($gpu['memory_type']) ?></span>
+                </div>
+                <div class="spec-chip h-7 flex items-center gap-1.5">
+                  <i class="fa-solid fa-arrows-split-up-and-left text-indigo-400 text-[10px]"></i>
+                  <span class="truncate"><?= e($gpu['bus_width']) ?>-bit</span>
+                </div>
+                <div class="spec-chip h-7 flex items-center gap-1.5">
+                  <i class="fa-solid fa-gauge-high text-emerald-400 text-[10px]"></i>
+                  <span class="truncate"><?= e($gpu['boost_clock']) ?> MHz</span>
+                </div>
+                <div class="spec-chip h-7 flex items-center gap-1.5">
+                  <i class="fa-solid fa-bolt text-amber-400 text-[10px]"></i>
+                  <span class="truncate"><?= e($gpu['tdp_watts']) ?>W TDP</span>
+                </div>
               </div>
             </div>
+
+            <!-- Footer (Pinned with mt-auto) -->
+            <div class="pt-3 border-t border-slate-800/80 mt-auto">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-slate-400">สถานะสต็อก:</span>
+                <?php if ($gpu['stock'] > 5): ?>
+                  <span class="text-[11px] font-mono font-semibold text-emerald-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> พร้อมส่ง (<?= $gpu['stock'] ?> ชิ้น)
+                  </span>
+                <?php elseif ($gpu['stock'] > 0): ?>
+                  <span class="text-[11px] font-mono font-semibold text-amber-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> ใกล้หมด (เหลือ <?= $gpu['stock'] ?>)
+                  </span>
+                <?php else: ?>
+                  <span class="text-[11px] font-mono font-semibold text-rose-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> สินค้าหมด
+                  </span>
+                <?php endif; ?>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 mt-1">
+                <div class="min-w-0">
+                  <span class="text-[10px] text-slate-500 uppercase font-mono block leading-tight">ราคาพิเศษ</span>
+                  <span class="font-scifi font-black text-base sm:text-lg text-rose-400 truncate block">
+                    <?= formatPrice($gpu['price']) ?>
+                  </span>
+                </div>
+                
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button type="button" 
+                          data-gpu-id="<?= (int)$gpu['id'] ?>"
+                          data-gpu="<?= htmlspecialchars(json_encode($gpu, JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') ?>"
+                          onclick="openQuickView(this)" 
+                          class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ดูสเปคด่วน">
+                    <i class="fa-solid fa-eye pointer-events-none"></i>
+                  </button>
+
+                  <button onclick='addToCartAjax(<?= $gpu['id'] ?>)' 
+                          class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="เพิ่มลงตะกร้า">
+                    <i class="fa-solid fa-cart-plus text-cyan-400"></i>
+                  </button>
+
+                  <?php if (isAdmin()): ?>
+                    <!-- Admin Edit Button (No buying for Admin) -->
+                    <a href="edit_gpu.php?id=<?= $gpu['id'] ?>" 
+                       class="px-3 py-2 rounded-xl text-xs font-scifi font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0" title="แก้ไขข้อมูลการ์ดจอนี้">
+                      <i class="fa-solid fa-pen-to-square text-xs"></i> <span>แก้ไข</span>
+                    </a>
+                  <?php else: ?>
+                    <!-- Member Buy Button -->
+                    <?php if ($gpu['stock'] > 0): ?>
+                      <button onclick="confirmBuy(<?= $gpu['id'] ?>, '<?= addslashes(e($gpu['model_name'])) ?>', <?= $gpu['price'] ?>)" 
+                              class="btn-cyber-primary px-3 py-2 rounded-xl text-xs font-scifi font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 shadow-md shadow-cyan-500/20">
+                        <i class="fa-solid fa-cart-shopping text-xs"></i> <span>สั่งซื้อ</span>
+                      </button>
+                    <?php else: ?>
+                      <button disabled class="px-2.5 py-2 rounded-xl bg-slate-800 text-slate-500 text-xs font-mono cursor-not-allowed whitespace-nowrap shrink-0">
+                        สินค้าหมด
+                      </button>
+                    <?php endif; ?>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
-
-      </div>
       <?php endforeach; ?>
     <?php else: ?>
       <div class="col-span-full text-center py-16 glass-panel rounded-2xl">
