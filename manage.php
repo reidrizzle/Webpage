@@ -223,9 +223,12 @@ if ($pdo) {
               <td class="py-3 px-4 text-center whitespace-nowrap">
                 <div class="flex items-center justify-center gap-1.5">
                   <!-- Quick View -->
-                  <button type="button" onclick="openQuickViewById(<?= (int)$gpu['id'] ?>)" 
+                  <button type="button" 
+                          data-gpu-id="<?= (int)$gpu['id'] ?>"
+                          data-gpu="<?= htmlspecialchars(json_encode($gpu, JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') ?>"
+                          onclick="openQuickView(this)" 
                           class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-cyan-400 transition-colors" title="ดูตัวอย่าง">
-                    <i class="fa-solid fa-eye text-xs"></i>
+                    <i class="fa-solid fa-eye text-xs pointer-events-none"></i>
                   </button>
 
                   <!-- Edit -->

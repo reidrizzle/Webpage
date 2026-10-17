@@ -117,7 +117,10 @@
       </div>
       <div class="p-6 flex flex-col justify-between">
         <div>
-          <span id="qvBrand" class="text-xs uppercase font-scifi font-bold text-cyan-400 tracking-wider"></span>
+          <div class="flex items-center justify-between mb-1">
+            <span id="qvBrand" class="text-xs uppercase font-scifi font-bold text-cyan-400 tracking-wider"></span>
+            <span id="qvStock" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/30"></span>
+          </div>
           <h3 id="qvModelName" class="text-lg font-bold text-white mt-1 leading-snug"></h3>
           <p id="qvDesc" class="text-xs text-slate-400 mt-2 line-clamp-3 leading-relaxed"></p>
           
@@ -163,8 +166,108 @@
   window.currentUserWallet = <?= isLoggedIn() ? (float)getUserWallet($_SESSION['user_id']) : 0 ?>;
 </script>
 
-<!-- Core Script -->
-<script src="assets/js/main.js"></script>
+<!-- Core Script with Cache-Busting -->
+<script src="assets/js/main.js?v=<?= time() ?>"></script>
+
+<!-- Immediate Inline Quick View Fallback (guarantees execution even if cached) -->
+<script>
+(function() {
+  window.gpuCatalog = window.gpuCatalog || {};
+  
+  if (typeof window.openQuickView !== 'function') {
+    window.openQuickView = function(input) {
+      var gpuData = null;
+      if (input && (input instanceof HTMLElement || input.nodeType === 1)) {
+        var raw = input.getAttribute('data-gpu');
+        if (raw) {
+          try { gpuData = JSON.parse(raw); } catch (e) {}
+        }
+        if (!gpuData) {
+          var elId = input.getAttribute('data-gpu-id') || input.getAttribute('data-id');
+          if (elId && window.gpuCatalog && window.gpuCatalog[elId]) gpuData = window.gpuCatalog[elId];
+        }
+      } else if (typeof input === 'number' || typeof input === 'string') {
+        if (window.gpuCatalog && window.gpuCatalog[input]) {
+          gpuData = window.gpuCatalog[input];
+        } else {
+          var el = document.querySelector('[data-gpu-id="' + input + '"]');
+          if (el && el.getAttribute('data-gpu')) {
+            try { gpuData = JSON.parse(el.getAttribute('data-gpu')); } catch (e) {}
+          }
+        }
+      } else if (input && typeof input === 'object') {
+        gpuData = input;
+      }
+
+      if (!gpuData) return;
+      var modal = document.getElementById('quickViewModal');
+      if (!modal) return;
+
+      var setT = function(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.innerText = (text !== undefined && text !== null) ? text : '';
+      };
+
+      setT('qvModelName', gpuData.model_name || '');
+      setT('qvBrand', (gpuData.brand_name || '') + (gpuData.chipset_model ? ' • ' + gpuData.chipset_model : ''));
+      setT('qvPrice', '฿' + Number(gpuData.price || 0).toLocaleString());
+      setT('qvStock', (Number(gpuData.stock) > 0 ? 'คงเหลือ ' + gpuData.stock + ' ชิ้น' : 'สินค้าหมด'));
+      setT('qvVram', (gpuData.vram_gb ? gpuData.vram_gb + ' GB ' : '') + (gpuData.memory_type || ''));
+      setT('qvClocks', (gpuData.core_clock || '-') + ' / ' + (gpuData.boost_clock || '-') + ' MHz');
+      setT('qvBus', (gpuData.bus_width || '-') + '-bit');
+      setT('qvTdp', (gpuData.tdp_watts || '-') + 'W');
+      setT('qvDesc', gpuData.description || 'ไม่มีรายละเอียดเพิ่มเติม');
+
+      var qvImg = document.getElementById('qvImg');
+      if (qvImg) {
+        qvImg.src = gpuData.image_url || 'assets/images/gpus/asus_rog_rtx_4090.jpg';
+        qvImg.onerror = function() {
+          this.src = 'https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products103815_800.jpg';
+        };
+      }
+
+      var qvBuyBtn = document.getElementById('qvBuyBtn');
+      if (qvBuyBtn) {
+        if (Number(gpuData.stock) > 0) {
+          qvBuyBtn.disabled = false;
+          qvBuyBtn.className = "btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold font-scifi";
+          qvBuyBtn.innerHTML = '<i class="fa-solid fa-cart-shopping mr-1.5"></i> สั่งซื้อทันที';
+          qvBuyBtn.onclick = function() {
+            closeQuickView();
+            if (typeof confirmBuy === 'function') confirmBuy(gpuData.id, gpuData.model_name, gpuData.price);
+          };
+        } else {
+          qvBuyBtn.disabled = true;
+          qvBuyBtn.className = "px-4 py-2 rounded-xl text-xs font-bold font-scifi bg-slate-800 text-slate-500 cursor-not-allowed";
+          qvBuyBtn.innerHTML = 'สินค้าหมด';
+          qvBuyBtn.onclick = null;
+        }
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      modal.style.display = 'flex';
+    };
+  }
+
+  if (typeof window.openQuickViewById !== 'function') {
+    window.openQuickViewById = function(id) {
+      window.openQuickView(id);
+    };
+  }
+
+  if (typeof window.closeQuickView !== 'function') {
+    window.closeQuickView = function() {
+      var modal = document.getElementById('quickViewModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        modal.style.display = 'none';
+      }
+    };
+  }
+})();
+</script>
 
 <!-- SweetAlert2 URL Message Listener -->
 <?php if (isset($_GET['msg'])): ?>

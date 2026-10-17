@@ -108,7 +108,6 @@ if ($pdo) {
           <div class="relative py-4 flex items-center justify-center">
             <div class="absolute inset-0 bg-cyan-500/10 rounded-full blur-2xl"></div>
             <img src="assets/images/gpus/asus_rog_rtx_4090.jpg" 
-                 onerror="this.src='https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products78126_800.jpg'"
                  alt="ASUS ROG Strix RTX 4090 OC Packshot" 
                  class="relative z-10 max-h-56 object-contain drop-shadow-[0_20px_35px_rgba(0,240,255,0.25)] group-hover:scale-105 group-hover:-rotate-1 transition-transform duration-500">
           </div>
@@ -273,10 +272,12 @@ if ($pdo) {
                 </span>
               </div>
               
-              <div class="flex items-center gap-1.5 shrink-0">
-                <button type="button" onclick="openQuickViewById(<?= (int)$gpu['id'] ?>)" 
+                <button type="button" 
+                        data-gpu-id="<?= (int)$gpu['id'] ?>"
+                        data-gpu="<?= htmlspecialchars(json_encode($gpu, JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') ?>"
+                        onclick="openQuickView(this)" 
                         class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ดูสเปคด่วน">
-                  <i class="fa-solid fa-eye"></i>
+                  <i class="fa-solid fa-eye pointer-events-none"></i>
                 </button>
 
                 <?php if (isAdmin()): ?>

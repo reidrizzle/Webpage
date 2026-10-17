@@ -269,9 +269,12 @@ require_once __DIR__ . '/includes/navbar.php';
                 </div>
                 
                 <div class="flex items-center gap-1.5 shrink-0">
-                  <button type="button" onclick="openQuickViewById(<?= (int)$gpu['id'] ?>)" 
+                  <button type="button" 
+                          data-gpu-id="<?= (int)$gpu['id'] ?>"
+                          data-gpu="<?= htmlspecialchars(json_encode($gpu, JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') ?>"
+                          onclick="openQuickView(this)" 
                           class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs transition-colors shrink-0" title="ดูสเปคด่วน">
-                    <i class="fa-solid fa-eye"></i>
+                    <i class="fa-solid fa-eye pointer-events-none"></i>
                   </button>
 
                   <button onclick='addToCartAjax(<?= $gpu['id'] ?>)' 

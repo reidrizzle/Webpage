@@ -180,50 +180,94 @@ function registerGpuCatalog(items) {
 }
 
 function openQuickViewById(id) {
-  const gpu = (window.gpuCatalog && window.gpuCatalog[id]) ? window.gpuCatalog[id] : null;
-  if (gpu) {
-    openQuickView(gpu);
-  } else {
-    console.warn('GPU not found in window.gpuCatalog for ID:', id);
-  }
+  openQuickView(id);
 }
 
-// Quick View Modal (supports GPU object or GPU ID)
-function openQuickView(gpuData) {
-  if (typeof gpuData === 'number' || typeof gpuData === 'string') {
-    gpuData = (window.gpuCatalog && window.gpuCatalog[gpuData]) ? window.gpuCatalog[gpuData] : null;
+// Quick View Modal (supports HTMLElement, GPU Object, or GPU ID)
+function openQuickView(input) {
+  let gpuData = null;
+
+  // 1. If an HTML element (the button clicked) is passed
+  if (input && (input instanceof HTMLElement || input.nodeType === 1)) {
+    const raw = input.getAttribute('data-gpu');
+    if (raw) {
+      try {
+        gpuData = JSON.parse(raw);
+      } catch (e) {
+        console.error('Error parsing data-gpu attribute:', e);
+      }
+    }
+    if (!gpuData) {
+      const elId = input.getAttribute('data-gpu-id') || input.getAttribute('data-id');
+      if (elId && window.gpuCatalog && window.gpuCatalog[elId]) {
+        gpuData = window.gpuCatalog[elId];
+      }
+    }
+  } 
+  // 2. If ID was passed (number or string)
+  else if (typeof input === 'number' || typeof input === 'string') {
+    if (window.gpuCatalog && window.gpuCatalog[input]) {
+      gpuData = window.gpuCatalog[input];
+    } else {
+      const el = document.querySelector('[data-gpu-id="' + input + '"]');
+      if (el && el.getAttribute('data-gpu')) {
+        try {
+          gpuData = JSON.parse(el.getAttribute('data-gpu'));
+        } catch (e) {}
+      }
+    }
+  } 
+  // 3. If full GPU object was passed
+  else if (input && typeof input === 'object') {
+    gpuData = input;
   }
-  if (!gpuData) return;
+
+  if (!gpuData) {
+    console.warn('openQuickView: No GPU data found for input', input);
+    return;
+  }
 
   const modal = document.getElementById('quickViewModal');
-  if (!modal) return;
+  if (!modal) {
+    console.error('quickViewModal element not found in DOM');
+    return;
+  }
 
-  document.getElementById('qvModelName').innerText = gpuData.model_name || '';
-  document.getElementById('qvBrand').innerText = (gpuData.brand_name || '') + (gpuData.chipset_model ? ' • ' + gpuData.chipset_model : '');
-  document.getElementById('qvPrice').innerText = '฿' + Number(gpuData.price).toLocaleString();
-  document.getElementById('qvStock').innerText = (gpuData.stock > 0 ? gpuData.stock + ' ชิ้น' : 'สินค้าหมด');
-  document.getElementById('qvVram').innerText = (gpuData.vram_gb ? gpuData.vram_gb + ' GB ' : '') + (gpuData.memory_type || '');
-  document.getElementById('qvClocks').innerText = (gpuData.core_clock || '-') + ' / ' + (gpuData.boost_clock || '-') + ' MHz';
-  document.getElementById('qvBus').innerText = (gpuData.bus_width || '-') + '-bit';
-  document.getElementById('qvTdp').innerText = (gpuData.tdp_watts || '-') + 'W';
-  document.getElementById('qvDesc').innerText = gpuData.description || 'ไม่มีรายละเอียดเพิ่มเติม';
+  const safeSetText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.innerText = (text !== undefined && text !== null) ? text : '';
+  };
+
+  safeSetText('qvModelName', gpuData.model_name || '');
+  safeSetText('qvBrand', (gpuData.brand_name || '') + (gpuData.chipset_model ? ' • ' + gpuData.chipset_model : ''));
+  safeSetText('qvPrice', '฿' + Number(gpuData.price || 0).toLocaleString());
+  safeSetText('qvStock', (Number(gpuData.stock) > 0 ? 'คงเหลือ ' + gpuData.stock + ' ชิ้น' : 'สินค้าหมด'));
+  safeSetText('qvVram', (gpuData.vram_gb ? gpuData.vram_gb + ' GB ' : '') + (gpuData.memory_type || ''));
+  safeSetText('qvClocks', (gpuData.core_clock || '-') + ' / ' + (gpuData.boost_clock || '-') + ' MHz');
+  safeSetText('qvBus', (gpuData.bus_width || '-') + '-bit');
+  safeSetText('qvTdp', (gpuData.tdp_watts || '-') + 'W');
+  safeSetText('qvDesc', gpuData.description || 'ไม่มีรายละเอียดเพิ่มเติม');
   
   const qvImg = document.getElementById('qvImg');
   if (qvImg) {
-    qvImg.src = gpuData.image_url || 'https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products103815_800.jpg';
-    qvImg.onerror = () => handleImgError(qvImg);
+    qvImg.src = gpuData.image_url || 'assets/images/gpus/asus_rog_rtx_4090.jpg';
+    qvImg.onerror = function() {
+      this.src = 'https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products103815_800.jpg';
+    };
   }
 
   // Hook Quick View Buy Button
   const qvBuyBtn = document.getElementById('qvBuyBtn');
   if (qvBuyBtn) {
-    if (gpuData.stock > 0) {
+    if (Number(gpuData.stock) > 0) {
       qvBuyBtn.disabled = false;
       qvBuyBtn.className = "btn-cyber-primary px-4 py-2 rounded-xl text-xs font-bold font-scifi";
       qvBuyBtn.innerHTML = '<i class="fa-solid fa-cart-shopping mr-1.5"></i> สั่งซื้อทันที';
-      qvBuyBtn.onclick = () => {
+      qvBuyBtn.onclick = function() {
         closeQuickView();
-        confirmBuy(gpuData.id, gpuData.model_name, gpuData.price);
+        if (typeof confirmBuy === 'function') {
+          confirmBuy(gpuData.id, gpuData.model_name, gpuData.price);
+        }
       };
     } else {
       qvBuyBtn.disabled = true;
@@ -235,6 +279,7 @@ function openQuickView(gpuData) {
 
   modal.classList.remove('hidden');
   modal.classList.add('flex');
+  modal.style.display = 'flex';
 }
 
 function closeQuickView() {
@@ -242,8 +287,17 @@ function closeQuickView() {
   if (modal) {
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+    modal.style.display = 'none';
   }
 }
+
+// Global click delegation for any eye icon / Quick View button
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('button[data-gpu-id]');
+  if (btn && btn.title && (btn.title.includes('ดูสเปคด่วน') || btn.title.includes('ดูตัวอย่าง'))) {
+    openQuickView(btn);
+  }
+});
 
 // ESC Key closes QuickView
 document.addEventListener('keydown', function(e) {
