@@ -65,6 +65,18 @@ if ($pdo) {
     </div>
 
     <div class="flex flex-wrap items-center gap-3">
+      <?php if (isset($_GET['sync_catalog'])): ?>
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            if (typeof cyberAlert === 'function') {
+              cyberAlert('ซิงค์ข้อมูลสำเร็จ!', 'อัปเดตรายการการ์ดจอทั้ง 36 รุ่นพร้อมรูปกล่องและตัวการ์ดจอเรียบร้อยแล้ว', 'success');
+            }
+          });
+        </script>
+      <?php endif; ?>
+      <a href="manage.php?sync_catalog=1" class="px-3.5 py-2.5 rounded-xl bg-cyan-950/70 border border-cyan-500/50 text-cyan-300 hover:text-white hover:bg-cyan-900/60 transition-all text-xs font-scifi font-bold flex items-center gap-1.5 shadow-sm" title="ซิงค์และอัปเดตการ์ดจอ 36 รุ่น">
+        <i class="fa-solid fa-arrows-rotate text-cyan-400"></i> ซิงค์ 36 รุ่น
+      </a>
       <a href="sales_report.php" class="px-4 py-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:text-white hover:bg-emerald-900/60 transition-colors text-xs font-scifi font-bold flex items-center gap-1.5 shadow-sm">
         <i class="fa-solid fa-chart-line text-emerald-400"></i> รายงานยอดขาย
       </a>

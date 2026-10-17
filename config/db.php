@@ -44,6 +44,8 @@ function getDBConnection() {
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
             $pdo->exec("SET time_zone = '+07:00'");
+            ensureInventoryLogsTable($pdo);
+            ensureGpuCatalogUpdated($pdo);
         } catch (PDOException $e) {
             // In development / demo, we capture error cleanly
             error_log("Database Connection Error: " . $e->getMessage());
@@ -283,6 +285,8 @@ function ensureGpuCatalogUpdated($pdo) {
     if ($initialized) return;
     $initialized = true;
     try {
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
+
         // 1. Ensure brands 1-13 exist
         $pdo->exec("INSERT IGNORE INTO `brands` (`id`, `name`, `country`, `website`, `logo_url`) VALUES
             (1, 'ASUS ROG', 'Taiwan', 'https://rog.asus.com', 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=150&q=80'),
@@ -306,10 +310,10 @@ function ensureGpuCatalogUpdated($pdo) {
             (3, 'Intel', 'Arc Alchemist & Battlemage', 'Xe-HPG & Xe2', '#00F0FF'),
             (4, 'NVIDIA', 'GeForce RTX 30 Series', 'Ampere Architecture', '#00FF66')");
 
-        // 3. Check if GPU count < 30 OR if sample has old unsplash photo
+        // 3. Check if GPU count < 30 OR if sample has old unsplash photo OR sync requested
         $count = (int)$pdo->query("SELECT COUNT(*) FROM gpus")->fetchColumn();
         $sample = (string)$pdo->query("SELECT image_url FROM gpus WHERE id = 1 LIMIT 1")->fetchColumn();
-        if ($count < 30 || strpos($sample, 'unsplash.com') !== false) {
+        if ($count < 30 || strpos($sample, 'unsplash.com') !== false || isset($_GET['sync_catalog'])) {
             $pdo->exec("INSERT INTO `gpus` (`id`, `brand_id`, `chipset_id`, `model_name`, `chipset_model`, `series`, `vram_gb`, `memory_type`, `bus_width`, `core_clock`, `boost_clock`, `tdp_watts`, `price`, `stock`, `image_url`, `description`, `is_featured`, `status`) VALUES
 (1, 6, 2, 'VGA(การ์ดจอ) POWERCOLOR FIGHTER RADEON RX 6500 XT - 4GB GDDR6 V3 (AXRX 6500XT 4GBD6-DHV3) (3Y)', 'Radeon RX 6500 XT', 'RX 6000 Series', 4, 'GDDR6', 64, 2610, 2825, 107, 5490.00, 15, 'https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products103815_800.jpg', 'การ์ดจอรุ่นประหยัดคุ้มค่าสำหรับการเล่นเกม 1080p มอบประสิทธิภาพกราฟิก RDNA 2 พร้อมพัดลมคู่ระบายความร้อนเงียบสนิท ประกันศูนย์ไทย 3 ปีเต็ม', 1, 'available'),
 (2, 8, 4, 'VGA(การ์ดจอ) PALIT GEFORCE RTX 3050 STORM X 6GB GDDR6 (NE63050018JE-1072F) (3Y)', 'GeForce RTX 3050', 'RTX 30 Series', 6, 'GDDR6', 96, 1042, 1470, 70, 6990.00, 18, 'https://ihcupload-bkk.s3.ap-southeast-7.amazonaws.com/img/product/products85859_800.jpg', 'การ์ดจอขนาดกะทัดรัดแบบ Single Fan ไม่ต้องต่อไฟเพิ่ม ประหยัดพลังงานขั้นสุด รองรับ Ray Tracing และ NVIDIA DLSS เหมาะสำหรับเคส ITX และอัปเกรดคอมเดิม', 0, 'available'),
@@ -366,7 +370,9 @@ function ensureGpuCatalogUpdated($pdo) {
                 status = VALUES(status)
             ");
         }
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
     } catch (PDOException $e) {
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
         error_log('Catalog update error: ' . $e->getMessage());
     }
 }
